@@ -1,0 +1,2387 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "package",
+      "community": 9,
+      "norm_label": "package.json"
+    },
+    {
+      "label": "name",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "package_name",
+      "community": 9,
+      "norm_label": "name"
+    },
+    {
+      "label": "private",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "package_private",
+      "community": 9,
+      "norm_label": "private"
+    },
+    {
+      "label": "workspaces",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "package_workspaces",
+      "community": 9,
+      "norm_label": "workspaces"
+    },
+    {
+      "label": "download.sh",
+      "file_type": "code",
+      "source_file": "packages/data/download.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "data_download",
+      "community": 10,
+      "norm_label": "download.sh"
+    },
+    {
+      "label": "download.sh script",
+      "file_type": "code",
+      "source_file": "packages/data/download.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "home_anand_r_m_documents_hackathon_bruteforce_packages_data_download_sh__entry",
+      "community": 10,
+      "norm_label": "download.sh script"
+    },
+    {
+      "label": "parse-icij.ts",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ingest_parse_icij",
+      "community": 5,
+      "norm_label": "parse-icij.ts"
+    },
+    {
+      "label": "ICIJEntityRow",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "ingest_parse_icij_icijentityrow",
+      "community": 5,
+      "norm_label": "icijentityrow"
+    },
+    {
+      "label": "ICIJOfficerRow",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "ingest_parse_icij_icijofficerrow",
+      "community": 5,
+      "norm_label": "icijofficerrow"
+    },
+    {
+      "label": "ICIJAddressRow",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "ingest_parse_icij_icijaddressrow",
+      "community": 5,
+      "norm_label": "icijaddressrow"
+    },
+    {
+      "label": "ICIJRelationshipRow",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "ingest_parse_icij_icijrelationshiprow",
+      "community": 5,
+      "norm_label": "icijrelationshiprow"
+    },
+    {
+      "label": "TARGET_JURISDICTIONS",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "ingest_parse_icij_target_jurisdictions",
+      "community": 5,
+      "norm_label": "target_jurisdictions"
+    },
+    {
+      "label": "mapRelType()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L60",
+      "_origin": "ast",
+      "id": "ingest_parse_icij_mapreltype",
+      "community": 5,
+      "norm_label": "mapreltype()"
+    },
+    {
+      "label": "readCSV()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L81",
+      "_origin": "ast",
+      "id": "ingest_parse_icij_readcsv",
+      "community": 5,
+      "norm_label": "readcsv()"
+    },
+    {
+      "label": "parseICIJ()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L95",
+      "_origin": "ast",
+      "id": "ingest_parse_icij_parseicij",
+      "community": 5,
+      "norm_label": "parseicij()"
+    },
+    {
+      "label": "parse-opensanctions.ts",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ingest_parse_opensanctions",
+      "community": 8,
+      "norm_label": "parse-opensanctions.ts"
+    },
+    {
+      "label": "SanctionsRow",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "ingest_parse_opensanctions_sanctionsrow",
+      "community": 8,
+      "norm_label": "sanctionsrow"
+    },
+    {
+      "label": "PRIORITY_DATASETS",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "ingest_parse_opensanctions_priority_datasets",
+      "community": 8,
+      "norm_label": "priority_datasets"
+    },
+    {
+      "label": "scorePriority()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "ingest_parse_opensanctions_scorepriority",
+      "community": 8,
+      "norm_label": "scorepriority()"
+    },
+    {
+      "label": "parseOpenSanctions()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "ingest_parse_opensanctions_parseopensanctions",
+      "community": 8,
+      "norm_label": "parseopensanctions()"
+    },
+    {
+      "label": "createMinimalSanctions()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L141",
+      "_origin": "ast",
+      "id": "ingest_parse_opensanctions_createminimalsanctions",
+      "community": 8,
+      "norm_label": "createminimalsanctions()"
+    },
+    {
+      "label": "planted-case.ts",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ingest_planted_case",
+      "community": 0,
+      "norm_label": "planted-case.ts"
+    },
+    {
+      "label": "plantedEntities",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "ingest_planted_case_plantedentities",
+      "community": 0,
+      "norm_label": "plantedentities"
+    },
+    {
+      "label": "plantedEdges",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L118",
+      "_origin": "ast",
+      "id": "ingest_planted_case_plantededges",
+      "community": 0,
+      "norm_label": "plantededges"
+    },
+    {
+      "label": "plantedSourceRecords",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L324",
+      "_origin": "ast",
+      "id": "ingest_planted_case_plantedsourcerecords",
+      "community": 0,
+      "norm_label": "plantedsourcerecords"
+    },
+    {
+      "label": "getPlantedCase()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L578",
+      "_origin": "ast",
+      "id": "ingest_planted_case_getplantedcase",
+      "community": 0,
+      "norm_label": "getplantedcase()"
+    },
+    {
+      "label": "run.ts",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ingest_run",
+      "community": 0,
+      "norm_label": "run.ts"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "ingest_run_main",
+      "community": 0,
+      "norm_label": "main()"
+    },
+    {
+      "label": "synthetic-trade.ts",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ingest_synthetic_trade",
+      "community": 0,
+      "norm_label": "synthetic-trade.ts"
+    },
+    {
+      "label": "shipments",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "ingest_synthetic_trade_shipments",
+      "community": 0,
+      "norm_label": "shipments"
+    },
+    {
+      "label": "getSyntheticTrade()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "ingest_synthetic_trade_getsynthetictrade",
+      "community": 0,
+      "norm_label": "getsynthetictrade()"
+    },
+    {
+      "label": "types.ts",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ingest_types",
+      "community": 0,
+      "norm_label": "types.ts"
+    },
+    {
+      "label": "EntityNode",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ingest_types_entitynode",
+      "community": 0,
+      "norm_label": "entitynode"
+    },
+    {
+      "label": "EvidenceEdge",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "ingest_types_evidenceedge",
+      "community": 0,
+      "norm_label": "evidenceedge"
+    },
+    {
+      "label": "SourceRecord",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "ingest_types_sourcerecord",
+      "community": 0,
+      "norm_label": "sourcerecord"
+    },
+    {
+      "label": "SeedData",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "ingest_types_seeddata",
+      "community": 0,
+      "norm_label": "seeddata"
+    },
+    {
+      "label": "validate.ts",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ingest_validate",
+      "community": 0,
+      "norm_label": "validate.ts"
+    },
+    {
+      "label": "readJSON()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "ingest_validate_readjson",
+      "community": 0,
+      "norm_label": "readjson()"
+    },
+    {
+      "label": "check()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "ingest_validate_check",
+      "community": 0,
+      "norm_label": "check()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "ingest_validate_main",
+      "community": 0,
+      "norm_label": "main()"
+    },
+    {
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "data_package",
+      "community": 2,
+      "norm_label": "package.json"
+    },
+    {
+      "label": "name",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "data_package_name",
+      "community": 2,
+      "norm_label": "name"
+    },
+    {
+      "label": "private",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "data_package_private",
+      "community": 2,
+      "norm_label": "private"
+    },
+    {
+      "label": "type",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "data_package_type",
+      "community": 2,
+      "norm_label": "type"
+    },
+    {
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "data_package_scripts",
+      "community": 2,
+      "norm_label": "scripts"
+    },
+    {
+      "label": "download",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "data_package_scripts_download",
+      "community": 2,
+      "norm_label": "download"
+    },
+    {
+      "label": "ingest",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "data_package_scripts_ingest",
+      "community": 2,
+      "norm_label": "ingest"
+    },
+    {
+      "label": "validate",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "data_package_scripts_validate",
+      "community": 2,
+      "norm_label": "validate"
+    },
+    {
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "data_package_dependencies",
+      "community": 2,
+      "norm_label": "dependencies"
+    },
+    {
+      "label": "csv-parse",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "data_package_dependencies_csv_parse",
+      "community": 2,
+      "norm_label": "csv-parse"
+    },
+    {
+      "label": "tsx",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "data_package_dependencies_tsx",
+      "community": 2,
+      "norm_label": "tsx"
+    },
+    {
+      "label": "typescript",
+      "file_type": "code",
+      "source_file": "packages/data/package.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "data_package_dependencies_typescript",
+      "community": 2,
+      "norm_label": "typescript"
+    },
+    {
+      "label": "tsconfig.json",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "data_tsconfig",
+      "community": 4,
+      "norm_label": "tsconfig.json"
+    },
+    {
+      "label": "compilerOptions",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "data_tsconfig_compileroptions",
+      "community": 4,
+      "norm_label": "compileroptions"
+    },
+    {
+      "label": "target",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "data_tsconfig_compileroptions_target",
+      "community": 4,
+      "norm_label": "target"
+    },
+    {
+      "label": "module",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "data_tsconfig_compileroptions_module",
+      "community": 4,
+      "norm_label": "module"
+    },
+    {
+      "label": "moduleResolution",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "data_tsconfig_compileroptions_moduleresolution",
+      "community": 4,
+      "norm_label": "moduleresolution"
+    },
+    {
+      "label": "strict",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "data_tsconfig_compileroptions_strict",
+      "community": 4,
+      "norm_label": "strict"
+    },
+    {
+      "label": "esModuleInterop",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "data_tsconfig_compileroptions_esmoduleinterop",
+      "community": 4,
+      "norm_label": "esmoduleinterop"
+    },
+    {
+      "label": "outDir",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "data_tsconfig_compileroptions_outdir",
+      "community": 4,
+      "norm_label": "outdir"
+    },
+    {
+      "label": "rootDir",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "data_tsconfig_compileroptions_rootdir",
+      "community": 4,
+      "norm_label": "rootdir"
+    },
+    {
+      "label": "include",
+      "file_type": "code",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "data_tsconfig_include",
+      "community": 4,
+      "norm_label": "include"
+    },
+    {
+      "label": "explanation_playbook.md",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook",
+      "community": 1,
+      "norm_label": "explanation_playbook.md"
+    },
+    {
+      "label": "Your Role",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_your_role",
+      "community": 1,
+      "norm_label": "your role"
+    },
+    {
+      "label": "Hard Constraints",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_hard_constraints",
+      "community": 1,
+      "norm_label": "hard constraints"
+    },
+    {
+      "label": "Input You Receive",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_input_you_receive",
+      "community": 1,
+      "norm_label": "input you receive"
+    },
+    {
+      "label": "Output Structure",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_output_structure",
+      "community": 1,
+      "norm_label": "output structure"
+    },
+    {
+      "label": "Executive Summary",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_executive_summary",
+      "community": 1,
+      "norm_label": "executive summary"
+    },
+    {
+      "label": "Ownership Chain",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_ownership_chain",
+      "community": 1,
+      "norm_label": "ownership chain"
+    },
+    {
+      "label": "Sanctions Match",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_sanctions_match",
+      "community": 1,
+      "norm_label": "sanctions match"
+    },
+    {
+      "label": "Alternative Connections",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_alternative_connections",
+      "community": 1,
+      "norm_label": "alternative connections"
+    },
+    {
+      "label": "Evidence Quality",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_evidence_quality",
+      "community": 1,
+      "norm_label": "evidence quality"
+    },
+    {
+      "label": "Conclusion",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_conclusion",
+      "community": 1,
+      "norm_label": "conclusion"
+    },
+    {
+      "label": "Style Rules",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_style_rules",
+      "community": 1,
+      "norm_label": "style rules"
+    },
+    {
+      "label": "Few-Shot Example",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "prompts_explanation_playbook_few_shot_example",
+      "community": 1,
+      "norm_label": "few-shot example"
+    },
+    {
+      "label": "investigation_playbook.md",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook",
+      "community": 6,
+      "norm_label": "investigation_playbook.md"
+    },
+    {
+      "label": "Your Role",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_your_role",
+      "community": 6,
+      "norm_label": "your role"
+    },
+    {
+      "label": "The Tool Menu",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_the_tool_menu",
+      "community": 7,
+      "norm_label": "the tool menu"
+    },
+    {
+      "label": "resolve_entity",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_resolve_entity",
+      "community": 7,
+      "norm_label": "resolve_entity"
+    },
+    {
+      "label": "all_control_paths",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_all_control_paths",
+      "community": 7,
+      "norm_label": "all_control_paths"
+    },
+    {
+      "label": "compute_control",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_compute_control",
+      "community": 7,
+      "norm_label": "compute_control"
+    },
+    {
+      "label": "find_shared_attributes",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_find_shared_attributes",
+      "community": 7,
+      "norm_label": "find_shared_attributes"
+    },
+    {
+      "label": "match_sanctions",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_match_sanctions",
+      "community": 7,
+      "norm_label": "match_sanctions"
+    },
+    {
+      "label": "co_consignee_links",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_co_consignee_links",
+      "community": 7,
+      "norm_label": "co_consignee_links"
+    },
+    {
+      "label": "score_evidence",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_score_evidence",
+      "community": 7,
+      "norm_label": "score_evidence"
+    },
+    {
+      "label": "assemble_dossier",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L47",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_assemble_dossier",
+      "community": 7,
+      "norm_label": "assemble_dossier"
+    },
+    {
+      "label": "Strategy Guidelines",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_strategy_guidelines",
+      "community": 6,
+      "norm_label": "strategy guidelines"
+    },
+    {
+      "label": "Hard Constraints",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_hard_constraints",
+      "community": 6,
+      "norm_label": "hard constraints"
+    },
+    {
+      "label": "Few-Shot Examples",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_few_shot_examples",
+      "community": 6,
+      "norm_label": "few-shot examples"
+    },
+    {
+      "label": "Good output (starting a case):",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L73",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_good_output_starting_a_case",
+      "community": 6,
+      "norm_label": "good output (starting a case):"
+    },
+    {
+      "label": "Good output (after finding candidate UBO):",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L82",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_good_output_after_finding_candidate_ubo",
+      "community": 6,
+      "norm_label": "good output (after finding candidate ubo):"
+    },
+    {
+      "label": "Good output (stopping):",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L91",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_good_output_stopping",
+      "community": 6,
+      "norm_label": "good output (stopping):"
+    },
+    {
+      "label": "Bad output (do NOT do this):",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L99",
+      "_origin": "ast",
+      "id": "prompts_investigation_playbook_bad_output_do_not_do_this",
+      "community": 6,
+      "norm_label": "bad output (do not do this):"
+    },
+    {
+      "label": "sar_summary_template.md",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template",
+      "community": 3,
+      "norm_label": "sar_summary_template.md"
+    },
+    {
+      "label": "SAR Summary",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_sar_summary",
+      "community": 3,
+      "norm_label": "sar summary"
+    },
+    {
+      "label": "Case Information",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_case_information",
+      "community": 3,
+      "norm_label": "case information"
+    },
+    {
+      "label": "Subject",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_subject",
+      "community": 3,
+      "norm_label": "subject"
+    },
+    {
+      "label": "Suspicious Activity Description",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_suspicious_activity_description",
+      "community": 3,
+      "norm_label": "suspicious activity description"
+    },
+    {
+      "label": "Ownership Structure",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_ownership_structure",
+      "community": 3,
+      "norm_label": "ownership structure"
+    },
+    {
+      "label": "Sanctions Match",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_sanctions_match",
+      "community": 3,
+      "norm_label": "sanctions match"
+    },
+    {
+      "label": "Evidence Quality",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_evidence_quality",
+      "community": 3,
+      "norm_label": "evidence quality"
+    },
+    {
+      "label": "Narrative",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_narrative",
+      "community": 3,
+      "norm_label": "narrative"
+    },
+    {
+      "label": "Conclusion",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_conclusion",
+      "community": 3,
+      "norm_label": "conclusion"
+    },
+    {
+      "label": "Source Records",
+      "file_type": "document",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "prompts_sar_summary_template_source_records",
+      "community": 3,
+      "norm_label": "source records"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_private",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "package",
+      "target": "package_workspaces",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/download.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "data_download",
+      "target": "home_anand_r_m_documents_hackathon_bruteforce_packages_data_download_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_parse_icij_icijaddressrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_parse_icij_icijentityrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_parse_icij_icijofficerrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_parse_icij_icijrelationshiprow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_parse_icij_mapreltype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_parse_icij_parseicij",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_parse_icij_readcsv",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_parse_icij_target_jurisdictions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_types_entitynode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_types_evidenceedge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_parse_icij",
+      "target": "ingest_types_sourcerecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_parse_icij",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L185",
+      "weight": 1.0,
+      "source": "ingest_parse_icij_parseicij",
+      "target": "ingest_parse_icij_mapreltype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-icij.ts",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "ingest_parse_icij_parseicij",
+      "target": "ingest_parse_icij_readcsv",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_parse_icij_parseicij",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "ingest_run_main",
+      "target": "ingest_parse_icij_parseicij",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions",
+      "target": "ingest_parse_opensanctions_createminimalsanctions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions",
+      "target": "ingest_parse_opensanctions_parseopensanctions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions",
+      "target": "ingest_parse_opensanctions_priority_datasets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions",
+      "target": "ingest_parse_opensanctions_sanctionsrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions",
+      "target": "ingest_parse_opensanctions_scorepriority",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions",
+      "target": "ingest_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions",
+      "target": "ingest_types_entitynode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions",
+      "target": "ingest_types_sourcerecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_parse_opensanctions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/parse-opensanctions.ts",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "ingest_parse_opensanctions_parseopensanctions",
+      "target": "ingest_parse_opensanctions_createminimalsanctions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_parse_opensanctions_parseopensanctions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "ingest_run_main",
+      "target": "ingest_parse_opensanctions_parseopensanctions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L578",
+      "weight": 1.0,
+      "source": "ingest_planted_case",
+      "target": "ingest_planted_case_getplantedcase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "ingest_planted_case",
+      "target": "ingest_planted_case_plantededges",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_planted_case",
+      "target": "ingest_planted_case_plantedentities",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L324",
+      "weight": 1.0,
+      "source": "ingest_planted_case",
+      "target": "ingest_planted_case_plantedsourcerecords",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_planted_case",
+      "target": "ingest_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_planted_case",
+      "target": "ingest_types_entitynode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_planted_case",
+      "target": "ingest_types_evidenceedge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/planted-case.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_planted_case",
+      "target": "ingest_types_sourcerecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_planted_case",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_planted_case_getplantedcase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "ingest_run_main",
+      "target": "ingest_planted_case_getplantedcase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_run_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_synthetic_trade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_synthetic_trade_getsynthetictrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_types_entitynode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_types_evidenceedge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "ingest_run",
+      "target": "ingest_types_sourcerecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/run.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "ingest_run_main",
+      "target": "ingest_synthetic_trade_getsynthetictrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "ingest_synthetic_trade",
+      "target": "ingest_synthetic_trade_getsynthetictrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "ingest_synthetic_trade",
+      "target": "ingest_synthetic_trade_shipments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_synthetic_trade",
+      "target": "ingest_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_synthetic_trade",
+      "target": "ingest_types_entitynode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_synthetic_trade",
+      "target": "ingest_types_evidenceedge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/synthetic-trade.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_synthetic_trade",
+      "target": "ingest_types_sourcerecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ingest_types",
+      "target": "ingest_types_entitynode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "ingest_types",
+      "target": "ingest_types_evidenceedge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "ingest_types",
+      "target": "ingest_types_seeddata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/types.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "ingest_types",
+      "target": "ingest_types_sourcerecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "ingest_validate",
+      "target": "ingest_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "ingest_validate",
+      "target": "ingest_types_entitynode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "ingest_validate",
+      "target": "ingest_types_evidenceedge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "ingest_validate",
+      "target": "ingest_types_sourcerecord",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "ingest_validate",
+      "target": "ingest_validate_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "ingest_validate",
+      "target": "ingest_validate_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "ingest_validate",
+      "target": "ingest_validate_readjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/ingest/validate.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "ingest_validate_main",
+      "target": "ingest_validate_readjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "data_package",
+      "target": "data_package_dependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "data_package",
+      "target": "data_package_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "data_package",
+      "target": "data_package_private",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "data_package",
+      "target": "data_package_scripts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "data_package",
+      "target": "data_package_type",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "data_package_scripts",
+      "target": "data_package_scripts_download",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "data_package_scripts",
+      "target": "data_package_scripts_ingest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "data_package_scripts",
+      "target": "data_package_scripts_validate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "data_package_dependencies",
+      "target": "data_package_dependencies_csv_parse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "data_package_dependencies",
+      "target": "data_package_dependencies_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/package.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "data_package_dependencies",
+      "target": "data_package_dependencies_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "data_tsconfig",
+      "target": "data_tsconfig_compileroptions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "data_tsconfig",
+      "target": "data_tsconfig_include",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "data_tsconfig_compileroptions",
+      "target": "data_tsconfig_compileroptions_esmoduleinterop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "data_tsconfig_compileroptions",
+      "target": "data_tsconfig_compileroptions_module",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "data_tsconfig_compileroptions",
+      "target": "data_tsconfig_compileroptions_moduleresolution",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "data_tsconfig_compileroptions",
+      "target": "data_tsconfig_compileroptions_outdir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "data_tsconfig_compileroptions",
+      "target": "data_tsconfig_compileroptions_rootdir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "data_tsconfig_compileroptions",
+      "target": "data_tsconfig_compileroptions_strict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/data/tsconfig.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "data_tsconfig_compileroptions",
+      "target": "data_tsconfig_compileroptions_target",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook",
+      "target": "prompts_explanation_playbook_few_shot_example",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook",
+      "target": "prompts_explanation_playbook_hard_constraints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook",
+      "target": "prompts_explanation_playbook_input_you_receive",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook",
+      "target": "prompts_explanation_playbook_output_structure",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook",
+      "target": "prompts_explanation_playbook_style_rules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook",
+      "target": "prompts_explanation_playbook_your_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook_output_structure",
+      "target": "prompts_explanation_playbook_alternative_connections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook_output_structure",
+      "target": "prompts_explanation_playbook_conclusion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook_output_structure",
+      "target": "prompts_explanation_playbook_evidence_quality",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook_output_structure",
+      "target": "prompts_explanation_playbook_executive_summary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook_output_structure",
+      "target": "prompts_explanation_playbook_ownership_chain",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/explanation_playbook.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "prompts_explanation_playbook_output_structure",
+      "target": "prompts_explanation_playbook_sanctions_match",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook",
+      "target": "prompts_investigation_playbook_few_shot_examples",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook",
+      "target": "prompts_investigation_playbook_hard_constraints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook",
+      "target": "prompts_investigation_playbook_strategy_guidelines",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook",
+      "target": "prompts_investigation_playbook_the_tool_menu",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook",
+      "target": "prompts_investigation_playbook_your_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_the_tool_menu",
+      "target": "prompts_investigation_playbook_all_control_paths",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_the_tool_menu",
+      "target": "prompts_investigation_playbook_assemble_dossier",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_the_tool_menu",
+      "target": "prompts_investigation_playbook_co_consignee_links",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_the_tool_menu",
+      "target": "prompts_investigation_playbook_compute_control",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_the_tool_menu",
+      "target": "prompts_investigation_playbook_find_shared_attributes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_the_tool_menu",
+      "target": "prompts_investigation_playbook_match_sanctions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_the_tool_menu",
+      "target": "prompts_investigation_playbook_resolve_entity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_the_tool_menu",
+      "target": "prompts_investigation_playbook_score_evidence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_few_shot_examples",
+      "target": "prompts_investigation_playbook_bad_output_do_not_do_this",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_few_shot_examples",
+      "target": "prompts_investigation_playbook_good_output_after_finding_candidate_ubo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_few_shot_examples",
+      "target": "prompts_investigation_playbook_good_output_starting_a_case",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/investigation_playbook.md",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "prompts_investigation_playbook_few_shot_examples",
+      "target": "prompts_investigation_playbook_good_output_stopping",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template",
+      "target": "prompts_sar_summary_template_sar_summary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_case_information",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_conclusion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_evidence_quality",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_narrative",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_ownership_structure",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_sanctions_match",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_source_records",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_subject",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "packages/mcp-server/prompts/sar_summary_template.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "prompts_sar_summary_template_sar_summary",
+      "target": "prompts_sar_summary_template_suspicious_activity_description",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": []
+}

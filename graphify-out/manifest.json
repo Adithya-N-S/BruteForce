@@ -1,0 +1,92 @@
+{
+  "package.json": {
+    "mtime": 1784282933.2971401,
+    "ast_hash": "578fd2b4129ff2e3e1bd5b4f5733c426",
+    "semantic_hash": ""
+  },
+  "packages/data/download.sh": {
+    "mtime": 1784282938.6941352,
+    "ast_hash": "6847fb9adfe31fd374004d8dc8797c5c",
+    "semantic_hash": ""
+  },
+  "packages/data/ingest/parse-icij.ts": {
+    "mtime": 1784283587.473552,
+    "ast_hash": "92f6a8c9c5674bd0ac263522a8fbe763",
+    "semantic_hash": ""
+  },
+  "packages/data/ingest/parse-opensanctions.ts": {
+    "mtime": 1784283308.0448031,
+    "ast_hash": "6c46b46d1ad6e69096fbbc912ff5a4e7",
+    "semantic_hash": ""
+  },
+  "packages/data/ingest/planted-case.ts": {
+    "mtime": 1784283294.2448156,
+    "ast_hash": "6927cae6660451d7c4cea2754d2629a9",
+    "semantic_hash": ""
+  },
+  "packages/data/ingest/run.ts": {
+    "mtime": 1784283332.542781,
+    "ast_hash": "fa53d8ce967bb20c403ab75e893e6c6b",
+    "semantic_hash": ""
+  },
+  "packages/data/ingest/synthetic-trade.ts": {
+    "mtime": 1784283324.801788,
+    "ast_hash": "ef94482f7d30af66ccfee31eef36b920",
+    "semantic_hash": ""
+  },
+  "packages/data/ingest/types.ts": {
+    "mtime": 1784283257.3458488,
+    "ast_hash": "9d6e337be570a81fe38c92cea292917a",
+    "semantic_hash": ""
+  },
+  "packages/data/ingest/validate.ts": {
+    "mtime": 1784283344.0267708,
+    "ast_hash": "fb014ee9ef983e13ed3605cc9b251f4c",
+    "semantic_hash": ""
+  },
+  "packages/data/package.json": {
+    "mtime": 1784282934.1531394,
+    "ast_hash": "ba8242040c859aaa45684cc7f27d1f5e",
+    "semantic_hash": ""
+  },
+  "packages/data/seed/edges.json": {
+    "mtime": 1784283640.3735044,
+    "ast_hash": "001a0638f7238bb1b219158f17dcc227",
+    "semantic_hash": ""
+  },
+  "packages/data/seed/entities.json": {
+    "mtime": 1784283640.3705046,
+    "ast_hash": "57a8376e610a46378da11593bf7c58ac",
+    "semantic_hash": ""
+  },
+  "packages/data/seed/sanctions_list.json": {
+    "mtime": 1784283640.3835044,
+    "ast_hash": "06eda8818c02419f0f83f94eecb27997",
+    "semantic_hash": ""
+  },
+  "packages/data/seed/source_records.json": {
+    "mtime": 1784283640.3775046,
+    "ast_hash": "45eadc0c6c14dca026045bbeb5e509a2",
+    "semantic_hash": ""
+  },
+  "packages/data/tsconfig.json": {
+    "mtime": 1784282934.8191388,
+    "ast_hash": "40ef7d41fd88bde02c419d79adb98410",
+    "semantic_hash": ""
+  },
+  "packages/mcp-server/prompts/explanation_playbook.md": {
+    "mtime": 1784283072.0550153,
+    "ast_hash": "07a957fdaaec652b8f7f9efcccdc3db7",
+    "semantic_hash": ""
+  },
+  "packages/mcp-server/prompts/investigation_playbook.md": {
+    "mtime": 1784283063.637023,
+    "ast_hash": "5088253ce198159cef250b5da7ba7981",
+    "semantic_hash": ""
+  },
+  "packages/mcp-server/prompts/sar_summary_template.md": {
+    "mtime": 1784283076.5800114,
+    "ast_hash": "5b71674348afd2f2211680b5645b1ced",
+    "semantic_hash": ""
+  }
+}
