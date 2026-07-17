@@ -69,12 +69,21 @@ export {
   scoreEvidence,
   type ScoreWeights,
   type ScoreEvidenceResult,
+  type ScoreBreakdown,
   DEFAULT_WEIGHTS,
   findSharedAttributes,
   type SharedAttributeLink,
+  type SharedAttribute,
+  type SharedAttributeMatch,
+  type SharedAttributesResult,
   coConsigneeLinks,
-  matchSanctions,
   assembleDossier,
+  type InvestigationSummary,
+  type EffectiveOwnershipSummary,
+  type EvidenceSummary,
+  type ConfidenceSummary,
+  type RecommendationsSection,
+  type ComprehensiveDossier,
 } from './algorithms/index.js';
 
 // Utilities

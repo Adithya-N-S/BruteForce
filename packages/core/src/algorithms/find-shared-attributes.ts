@@ -1,6 +1,54 @@
-import type { EntityId, EvidenceEdge } from '../types.js';
-import type { GraphManager } from '../graph/graph-manager.js';
+/**
+ * @module algorithms/find-shared-attributes
+ * @description
+ * Deterministic algorithm to identify attributes shared between entities.
+ *
+ * This algorithm supports two modes:
+ * 1. Scanning a list of nodes and edges to find groups of entities sharing attributes (new).
+ * 2. Finding shared attribute links for a specific entity in a GraphManager (backward compatibility).
+ */
 
+import type { EntityId, EvidenceEdge, EntityNode } from '../types.js';
+import type { GraphManager } from '../graph/graph-manager.js';
+import { normalizeString, normalizeEntityName } from '../utils/index.js';
+
+/**
+ * Represents a single shared attribute value and its type.
+ */
+export interface SharedAttribute {
+  /** The category of the attribute (e.g., 'phone', 'email', 'address', etc.) */
+  readonly type: string;
+  /** The normalized value used for matching */
+  readonly value: string;
+  /** The original display value */
+  readonly originalValue: string;
+}
+
+/**
+ * A group of entities that share one or more attributes.
+ */
+export interface SharedAttributeMatch {
+  /** The list of attributes shared by all entities in matchedEntities */
+  readonly sharedAttributes: readonly SharedAttribute[];
+  /** The list of entity IDs sharing these attributes */
+  readonly matchedEntities: readonly EntityId[];
+  /** The list of attribute fields/types that matched */
+  readonly matchedFields: readonly string[];
+  /** The aggregated confidence contribution for this match in [0, 1] */
+  readonly confidenceContribution: number;
+}
+
+/**
+ * The output of the findSharedAttributes algorithm in node/edge list mode.
+ */
+export interface SharedAttributesResult {
+  /** The list of matches, sorted descending by confidence contribution */
+  readonly matches: readonly SharedAttributeMatch[];
+}
+
+/**
+ * Original link structure for backward compatibility.
+ */
 export interface SharedAttributeLink {
   readonly linked_entity_id: EntityId;
   readonly shared_attribute_type: string;
@@ -8,19 +56,384 @@ export interface SharedAttributeLink {
   readonly edges: readonly EvidenceEdge[];
 }
 
+/**
+ * Maps edge types to original attribute names for backward compatibility.
+ */
 const EDGE_TYPE_MAP: Record<string, string> = {
   director: 'director_of',
   address: 'registered_at',
   agent: 'agent_for',
 };
 
+/**
+ * Maps edge types in reverse for backward compatibility.
+ */
 const REVERSE_TYPE_MAP: Record<string, string> = {
   director_of: 'director',
   registered_at: 'address',
   agent_for: 'agent',
 };
 
-export function findSharedAttributes(
+/**
+ * Deterministic weights representing the uniqueness/strength of each attribute type.
+ * Higher values contribute more to the overall match confidence.
+ */
+const CONFIDENCE_WEIGHTS: Record<string, number> = {
+  registration_number: 0.95,
+  tax_id: 0.95,
+  email: 0.85,
+  phone: 0.80,
+  domain: 0.75,
+  director: 0.70,
+  address: 0.60,
+  jurisdiction: 0.05,
+  other: 0.30,
+};
+
+/**
+ * Normalizes a phone number by keeping only digits and '+'.
+ * Returns null if the normalized value is too short to be unique.
+ *
+ * @param value - The raw phone number string or number.
+ * @returns Normalized phone string or null.
+ */
+function normalizePhone(value: string | number): string | null {
+  const str = String(value);
+  const normalized = str.replace(/[^\d+]/g, '');
+  return normalized.length >= 5 ? normalized : null;
+}
+
+/**
+ * Normalizes an email address by trimming and converting to lowercase.
+ * Returns null if the value does not resemble an email address.
+ *
+ * @param value - The raw email address string.
+ * @returns Normalized email string or null.
+ */
+function normalizeEmail(value: string): string | null {
+  const normalized = value.trim().toLowerCase();
+  return normalized.includes('@') ? normalized : null;
+}
+
+/**
+ * Normalizes a domain/website URL by trimming, converting to lowercase,
+ * and removing schemes/subdomains.
+ *
+ * @param value - The raw domain or website string.
+ * @returns Normalized domain string or null.
+ */
+function normalizeDomain(value: string): string | null {
+  let normalized = value.trim().toLowerCase();
+  normalized = normalized.replace(/^(https?:\/\/)?(www\.)?/, '');
+  normalized = (normalized.split('/')[0] ?? '').split('?')[0] ?? '';
+  return normalized.length > 0 ? normalized : null;
+}
+
+/**
+ * Normalizes alphanumeric identifiers (e.g. registration/tax IDs) by
+ * trimming, lowercase, and removing non-alphanumeric characters.
+ * Returns null if the value is too short to be unique.
+ *
+ * @param value - The raw identifier string or number.
+ * @returns Normalized identifier string or null.
+ */
+function normalizeId(value: string | number): string | null {
+  const str = String(value);
+  const normalized = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return normalized.length >= 3 ? normalized : null;
+}
+
+/**
+ * Normalizes a person's name using entity name normalization rules.
+ *
+ * @param value - The raw name string.
+ * @returns Normalized name string or null.
+ */
+function normalizeName(value: string): string | null {
+  const normalized = normalizeEntityName(value);
+  return normalized.length > 0 ? normalized : null;
+}
+
+/**
+ * Normalizes an address string using standard string normalization.
+ *
+ * @param value - The raw address string.
+ * @returns Normalized address string or null.
+ */
+function normalizeAddr(value: string): string | null {
+  const normalized = normalizeString(value);
+  return normalized.length > 0 ? normalized : null;
+}
+
+/**
+ * Flat structure for an extracted attribute.
+ */
+interface ExtractedAttribute {
+  readonly type: string;
+  readonly normalized: string;
+  readonly original: string;
+}
+
+/**
+ * Extracts all attributes from an EntityNode based on its jurisdiction,
+ * properties, attributes bag, and node type.
+ *
+ * @param node - The entity node.
+ * @returns List of extracted attributes.
+ */
+function extractNodeAttributes(node: EntityNode): ExtractedAttribute[] {
+  const list: ExtractedAttribute[] = [];
+
+  const add = (type: string, val: string | number) => {
+    const original = String(val).trim();
+    if (!original) return;
+    let normalized: string | null = null;
+
+    switch (type) {
+      case 'phone':
+        normalized = normalizePhone(original);
+        break;
+      case 'email':
+        normalized = normalizeEmail(original);
+        break;
+      case 'domain':
+        normalized = normalizeDomain(original);
+        break;
+      case 'registration_number':
+      case 'tax_id':
+        normalized = normalizeId(original);
+        break;
+      case 'address':
+        normalized = normalizeAddr(original);
+        break;
+      case 'director':
+        normalized = normalizeName(original);
+        break;
+      case 'jurisdiction':
+        normalized = original.toUpperCase().trim() || null;
+        break;
+      default:
+        normalized = normalizeString(original);
+    }
+
+    if (normalized) {
+      list.push({ type, normalized, original });
+    }
+  };
+
+  // 1. Jurisdiction
+  if (node.jurisdiction && node.jurisdiction.trim().length > 0) {
+    add('jurisdiction', node.jurisdiction);
+  }
+
+  // 2. Attributes Bag
+  for (const [key, value] of Object.entries(node.attributes)) {
+    const values: (string | number)[] = [];
+    if (typeof value === 'string' || typeof value === 'number') {
+      values.push(value);
+    } else if (Array.isArray(value)) {
+      for (const val of value) {
+        if (typeof val === 'string' || typeof val === 'number') {
+          values.push(val);
+        }
+      }
+    }
+
+    if (values.length === 0) continue;
+
+    let type = 'other';
+    const lowerKey = key.toLowerCase();
+    if (lowerKey.includes('address') || lowerKey.includes('street') || lowerKey.includes('location') || lowerKey.includes('hq')) {
+      type = 'address';
+    } else if (lowerKey.includes('email') || lowerKey.includes('e_mail')) {
+      type = 'email';
+    } else if (lowerKey.includes('phone') || lowerKey.includes('tel') || lowerKey.includes('mobile') || lowerKey.includes('fax')) {
+      type = 'phone';
+    } else if (lowerKey.includes('tax_id') || lowerKey.includes('tax_identifier') || lowerKey.includes('tin') || lowerKey.includes('tax_number') || lowerKey.includes('vat')) {
+      type = 'tax_id';
+    } else if (lowerKey.includes('registration_number') || lowerKey.includes('reg_num') || lowerKey.includes('reg_number') || lowerKey.includes('company_number') || lowerKey.includes('inc_number') || lowerKey.endsWith('_number') || lowerKey.endsWith('_id')) {
+      type = 'registration_number';
+    } else if (lowerKey.includes('domain') || lowerKey.includes('website') || lowerKey.includes('web_site') || lowerKey.includes('url')) {
+      type = 'domain';
+    } else if (lowerKey.includes('director') || lowerKey.includes('officer') || lowerKey.includes('ubo') || lowerKey.includes('owner') || lowerKey.includes('shareholder')) {
+      type = 'director';
+    }
+
+    for (const val of values) {
+      add(type, val);
+    }
+  }
+
+  // 3. Node Type Specific overrides
+  if (node.type === 'address') {
+    add('address', node.name);
+  }
+  if (node.type === 'person') {
+    add('director', node.name);
+  }
+
+  return list;
+}
+
+/**
+ * Internal implementation of finding shared attributes from lists of nodes and edges.
+ */
+function findSharedAttributesList(
+  nodes: readonly EntityNode[],
+  edges: readonly EvidenceEdge[]
+): SharedAttributesResult {
+  const nodeMap = new Map<EntityId, EntityNode>();
+  for (const node of nodes) {
+    nodeMap.set(node.id, node);
+  }
+
+  const entityAttributes = new Map<EntityId, ExtractedAttribute[]>();
+
+  // Extract attributes from node fields and bags
+  for (const node of nodes) {
+    entityAttributes.set(node.id, extractNodeAttributes(node));
+  }
+
+  // Extract attributes derived from edges
+  for (const edge of edges) {
+    const fromNode = nodeMap.get(edge.from);
+    const toNode = nodeMap.get(edge.to);
+
+    if (edge.type === 'director_of') {
+      const companyId = edge.to;
+      const companyAttrs = entityAttributes.get(companyId) || [];
+      if (fromNode) {
+        const normName = normalizeName(fromNode.name);
+        if (normName) {
+          companyAttrs.push({ type: 'director', normalized: normName, original: fromNode.name });
+        }
+      }
+      companyAttrs.push({ type: 'director', normalized: edge.from.toLowerCase(), original: edge.from });
+      entityAttributes.set(companyId, companyAttrs);
+    }
+
+    if (edge.type === 'registered_at') {
+      const companyId = edge.from;
+      const companyAttrs = entityAttributes.get(companyId) || [];
+      if (toNode) {
+        const normAddr = normalizeAddr(toNode.name);
+        if (normAddr) {
+          companyAttrs.push({ type: 'address', normalized: normAddr, original: toNode.name });
+        }
+      }
+      companyAttrs.push({ type: 'address', normalized: edge.to.toLowerCase(), original: edge.to });
+      entityAttributes.set(companyId, companyAttrs);
+    }
+
+    if (edge.type === 'agent_for') {
+      const companyId = edge.to;
+      const companyAttrs = entityAttributes.get(companyId) || [];
+      if (fromNode) {
+        const normName = normalizeName(fromNode.name);
+        if (normName) {
+          companyAttrs.push({ type: 'other', normalized: normName, original: fromNode.name });
+        }
+      }
+      companyAttrs.push({ type: 'other', normalized: edge.from.toLowerCase(), original: edge.from });
+      entityAttributes.set(companyId, companyAttrs);
+    }
+  }
+
+  // Deduplicate attributes for each individual entity
+  for (const [entityId, attrs] of entityAttributes.entries()) {
+    const seen = new Set<string>();
+    const deduped: ExtractedAttribute[] = [];
+    for (const attr of attrs) {
+      const key = `${attr.type}:${attr.normalized}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        deduped.push(attr);
+      }
+    }
+    entityAttributes.set(entityId, deduped);
+  }
+
+  // Map each unique attribute to the entities that possess it
+  const attributeToEntities = new Map<string, Set<EntityId>>();
+  const attributeDetails = new Map<string, ExtractedAttribute>();
+
+  for (const [entityId, attrs] of entityAttributes.entries()) {
+    for (const attr of attrs) {
+      const key = `${attr.type}:${attr.normalized}`;
+      if (!attributeToEntities.has(key)) {
+        attributeToEntities.set(key, new Set<EntityId>());
+        attributeDetails.set(key, attr);
+      }
+      attributeToEntities.get(key)!.add(entityId);
+    }
+  }
+
+  // Group attributes by the exact subset of entities sharing them
+  interface GroupedMatch {
+    readonly entities: readonly EntityId[];
+    readonly attributes: ExtractedAttribute[];
+  }
+  const groupedMatches = new Map<string, GroupedMatch>();
+
+  for (const [key, entitiesSet] of attributeToEntities.entries()) {
+    if (entitiesSet.size < 2) continue;
+
+    const sortedEntities = Array.from(entitiesSet).sort();
+    const groupKey = sortedEntities.join(',');
+    const attrDetail = attributeDetails.get(key)!;
+
+    if (!groupedMatches.has(groupKey)) {
+      groupedMatches.set(groupKey, {
+        entities: sortedEntities,
+        attributes: []
+      });
+    }
+    groupedMatches.get(groupKey)!.attributes.push(attrDetail);
+  }
+
+  // Construct match results
+  const matches: SharedAttributeMatch[] = [];
+
+  for (const group of groupedMatches.values()) {
+    const sharedAttributes = group.attributes.map(attr => ({
+      type: attr.type,
+      value: attr.normalized,
+      originalValue: attr.original
+    }));
+
+    const matchedFields = Array.from(new Set(group.attributes.map(attr => attr.type))).sort();
+
+    // Probabilistic union: 1 - product(1 - weight_i)
+    let product = 1;
+    for (const attr of sharedAttributes) {
+      const weight = CONFIDENCE_WEIGHTS[attr.type] ?? CONFIDENCE_WEIGHTS['other'] ?? 0.30;
+      product *= (1 - weight);
+    }
+    const confidenceContribution = 1 - product;
+
+    matches.push({
+      sharedAttributes,
+      matchedEntities: group.entities,
+      matchedFields,
+      confidenceContribution
+    });
+  }
+
+  // Sort matches descending by confidenceContribution, then by group size
+  const sortedMatches = matches.sort((a, b) => {
+    if (Math.abs(a.confidenceContribution - b.confidenceContribution) > 1e-9) {
+      return b.confidenceContribution - a.confidenceContribution;
+    }
+    return b.matchedEntities.length - a.matchedEntities.length;
+  });
+
+  return { matches: sortedMatches };
+}
+
+/**
+ * Original findSharedAttributes implementation for backward compatibility.
+ */
+function findSharedAttributesGraph(
   graph: GraphManager,
   params: {
     entity_id: EntityId;
@@ -71,4 +484,38 @@ export function findSharedAttributes(
   }
 
   return { links };
+}
+
+/**
+ * Identifies attributes shared between two or more entities in the investigation graph.
+ *
+ * Supports both list scanning and GraphManager backward compatibility signature.
+ *
+ * @param nodesOrGraph - Either an array of EntityNode, or a GraphManager instance.
+ * @param edgesOrParams - Either an array of EvidenceEdge, or params containing entity_id.
+ * @returns Result object.
+ */
+export function findSharedAttributes(
+  nodes: readonly EntityNode[],
+  edges: readonly EvidenceEdge[]
+): SharedAttributesResult;
+export function findSharedAttributes(
+  graph: GraphManager,
+  params: {
+    entity_id: EntityId;
+    attribute?: 'director' | 'address' | 'agent' | 'phone';
+  }
+): { links: SharedAttributeLink[] };
+export function findSharedAttributes(
+  arg1: readonly EntityNode[] | GraphManager,
+  arg2?: readonly EvidenceEdge[] | {
+    entity_id: EntityId;
+    attribute?: 'director' | 'address' | 'agent' | 'phone';
+  }
+): SharedAttributesResult | { links: SharedAttributeLink[] } {
+  if (Array.isArray(arg1)) {
+    return findSharedAttributesList(arg1 as readonly EntityNode[], (arg2 as readonly EvidenceEdge[]) || []);
+  } else {
+    return findSharedAttributesGraph(arg1 as GraphManager, arg2 as any);
+  }
 }
