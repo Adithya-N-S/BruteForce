@@ -1,2 +1,5 @@
 node_modules/
 packages/data/raw/
+dist/
+.next/
+out/

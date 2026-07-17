@@ -1,7 +1,9 @@
 {
   "name": "bruteforce",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "npm run build --workspace=@bruteforce/core && npm run build --workspace=veilbreaker-mcp",
     "start": "npm run start --workspace=veilbreaker-mcp"
@@ -9,7 +11,7 @@
   "devDependencies": {
     "typescript": "^5.5.0",
     "tsx": "^4.19.0",
-    "@types/node": "^20.0.0",
+    "@types/node": "^26.1.1",
     "rimraf": "^6.0.0"
   }
 }
