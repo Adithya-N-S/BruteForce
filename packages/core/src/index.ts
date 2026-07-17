@@ -1,7 +1,7 @@
 /**
- * @module @veilbreaker/core
+ * @module @bruteforce/core
  * @description
- * Public API surface of the VEILBREAKER deterministic core.
+ * Public API surface of the BruteForce deterministic core.
  *
  * This package contains **only** pure, deterministic logic:
  *   - Typed domain model (`types`)
@@ -13,7 +13,7 @@
  *
  * @example
  * ```ts
- * import { GraphManager, resolveEntity } from '@veilbreaker/core';
+ * import { GraphManager, resolveEntity } from '@bruteforce/core';
  *
  * const gm = new GraphManager();
  * gm.addEntity({ id: 'e1', type: 'company', name: 'Acme', jurisdiction: 'US', attributes: {} });
@@ -73,6 +73,7 @@ export {
   findSharedAttributes,
   type SharedAttributeLink,
   coConsigneeLinks,
+  matchSanctions,
   assembleDossier,
 } from './algorithms/index.js';
 

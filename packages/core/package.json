@@ -1,7 +1,7 @@
 {
-  "name": "@veilbreaker/core",
+  "name": "@bruteforce/core",
   "version": "0.1.0",
-  "description": "Deterministic evidence-graph core for VEILBREAKER — pure algorithms, no I/O, no LLM.",
+  "description": "Deterministic evidence-graph core for VEILBREAKER \u2014 pure algorithms, no I/O, no LLM.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

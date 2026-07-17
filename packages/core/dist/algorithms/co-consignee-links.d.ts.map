@@ -1,0 +1,1 @@
+{"version":3,"file":"co-consignee-links.d.ts","sourceRoot":"","sources":["../../src/algorithms/co-consignee-links.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,QAAQ,EAAE,YAAY,EAAE,MAAM,aAAa,CAAC;AAC1D,OAAO,KAAK,EAAE,YAAY,EAAE,MAAM,2BAA2B,CAAC;AAI9D,wBAAgB,gBAAgB,CAC9B,KAAK,EAAE,YAAY,EACnB,MAAM,EAAE;IAAE,SAAS,EAAE,QAAQ,CAAA;CAAE,GAC9B;IAAE,KAAK,EAAE,YAAY,EAAE,CAAA;CAAE,CA4B3B"}

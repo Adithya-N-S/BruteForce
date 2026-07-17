@@ -10,3 +10,4 @@ export { findSharedAttributes, type SharedAttributeLink } from './find-shared-at
 export { coConsigneeLinks } from './co-consignee-links.js';
 export { matchSanctions, type MatchSanctionsOptions } from './match-sanctions.js';
 export { assembleDossier } from './assemble-dossier.js';
+//# sourceMappingURL=index.d.ts.map
