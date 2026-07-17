@@ -70,6 +70,10 @@ export {
   type ScoreWeights,
   type ScoreEvidenceResult,
   DEFAULT_WEIGHTS,
+  findSharedAttributes,
+  type SharedAttributeLink,
+  coConsigneeLinks,
+  assembleDossier,
 } from './algorithms/index.js';
 
 // Utilities

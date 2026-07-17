@@ -82,7 +82,7 @@ export class GraphManager {
    */
   constructor() {
     this.graph = new DirectedGraph<NodeAttributes, EdgeAttributes>({
-      allowSelfLoops: false,
+      allowSelfLoops: true,
       multi: true,
     });
   }

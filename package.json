@@ -1,5 +1,5 @@
 {
   "name": "bruteforce",
   "private": true,
-  "workspaces": ["packages/data"]
+  "workspaces": ["packages/*"]
 }
