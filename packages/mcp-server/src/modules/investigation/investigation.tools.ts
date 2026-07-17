@@ -1,4 +1,4 @@
-import { ToolDecorator as Tool, z, ExecutionContext } from '@nitrostack/core';
+import { ToolDecorator as Tool, Widget, z, ExecutionContext } from '@nitrostack/core';
 import { GraphService } from '../../services/graph.service.js';
 import {
   resolveEntity,
@@ -48,6 +48,7 @@ export class InvestigationTools {
       min_edge_pct: z.number().optional().describe('Minimum ownership fraction per edge (0-1)'),
     }),
   })
+  @Widget('evidence-graph')
   async allControlPathsTool(
     input: { from: string; to?: string; max_depth?: number; min_edge_pct?: number },
     ctx: ExecutionContext

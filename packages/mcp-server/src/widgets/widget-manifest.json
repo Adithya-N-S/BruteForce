@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "widgets": [
+    {
+      "uri": "/evidence-graph",
+      "name": "Evidence Graph",
+      "description": "Renders ownership paths returned by the all_control_paths MCP tool",
+      "examples": [
+        {
+          "name": "Example Paths",
+          "description": "Demonstration of ownership paths",
+          "data": {
+            "paths": [
+              {
+                "nodes": ["Suspected UBO", "Intermediate Corp", "Target Inc"],
+                "edges": [
+                  {
+                    "from": "Suspected UBO",
+                    "to": "Intermediate Corp",
+                    "pct": 0.6
+                  },
+                  {
+                    "from": "Intermediate Corp",
+                    "to": "Target Inc",
+                    "pct": 0.4
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "tags": ["graph", "investigation"]
+    }
+  ]
+}
