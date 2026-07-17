@@ -31,6 +31,97 @@
         }
       ],
       "tags": ["graph", "investigation"]
+    },
+    {
+      "uri": "/dossier-view",
+      "name": "Dossier View & SAR",
+      "description": "Displays the final investigation audit dossier and SAR report returned by assemble_dossier",
+      "examples": [
+        {
+          "name": "Sample Dossier",
+          "description": "Sample UBO investigation dossier exceeding 25% threshold",
+          "data": {
+            "root": "Target Enterprise LLC",
+            "target": "Viktorov Capital Inc",
+            "control": {
+              "effective_control": 0.36,
+              "meets_threshold": true,
+              "contributing_paths": [
+                {
+                  "path_string": "Viktorov Capital Inc → Offshore Holding Ltd → Target Enterprise LLC",
+                  "effective_ownership": 0.36
+                }
+              ]
+            },
+            "evidence_confidence": {
+              "aggregate_confidence": 0.88,
+              "confidenceLevel": "high"
+            },
+            "sanctions": {
+              "matches": [
+                {
+                  "name": "Viktorov Capital Inc",
+                  "score": 0.95,
+                  "rationale": "OFAC SDN List Match — Executive Order 14024"
+                }
+              ]
+            },
+            "recommendations": {
+              "actions": [
+                "Establish Beneficial Ownership UBO: indirect control exceeds 25%.",
+                "Initiate Enhanced Due Diligence (EDD) protocols.",
+                "Halt transactions: potential high-confidence sanctions listing matched."
+              ],
+              "rationale": "Ultimate beneficial ownership established at 36% (exceeds 25% regulatory threshold). High-confidence sanctions match detected."
+            }
+          }
+        }
+      ],
+      "tags": ["dossier", "sar", "compliance"]
+    },
+    {
+      "uri": "/source-card",
+      "name": "Source Evidence Card",
+      "description": "Displays deterministic evidence scoring and provenance returned by score_evidence",
+      "examples": [
+        {
+          "name": "Sample Source Evidence",
+          "description": "Evidence score and dataset provenance breakdown",
+          "data": {
+            "scored": [
+              {
+                "id": "rel-owns-101",
+                "score": 0.92,
+                "level": "high",
+                "explanation": "High dataset quality (ICIJ Offshore Leaks) and Tier 1 registry verification.",
+                "edge": {
+                  "id": "rel-owns-101",
+                  "source_dataset": "ICIJ Offshore Leaks",
+                  "record_id": "REC-88392",
+                  "reliability_tier": 1
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "tags": ["evidence", "provenance"]
+    },
+    {
+      "uri": "/planner-log",
+      "name": "Planner SSE Stream Log",
+      "description": "Live streaming terminal for AI Orchestrator decisions, tool executions, and graph discoveries",
+      "examples": [
+        {
+          "name": "Live Log View",
+          "description": "Streaming terminal interface",
+          "data": {
+            "sessionId": "investigation-session-001",
+            "streamUrl": "http://localhost:3002/stream/investigation-session-001"
+          }
+        }
+      ],
+      "tags": ["orchestrator", "sse", "streaming"]
     }
   ]
 }

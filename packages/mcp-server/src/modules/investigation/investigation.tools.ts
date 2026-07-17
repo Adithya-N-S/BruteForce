@@ -170,6 +170,7 @@ export class InvestigationTools {
       edge_ids: z.array(z.string()).describe('Array of evidence edge IDs to score'),
     }),
   })
+  @Widget('source-card')
   async scoreEvidenceTool(
     input: { edge_ids: string[] },
     ctx: ExecutionContext
@@ -228,6 +229,7 @@ export class InvestigationTools {
       target: z.string().describe('The suspected UBO / controlling entity (target entity ID)'),
     }),
   })
+  @Widget('dossier-view')
   async assembleDossierTool(
     input: { root: string; target: string },
     ctx: ExecutionContext
