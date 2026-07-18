@@ -2,35 +2,47 @@ import { GraphManager } from '@bruteforce/core';
 import type { EvidenceEdge } from '@bruteforce/core';
 import { Client } from '@modelcontextprotocol/sdk/client';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import Anthropic from '@anthropic-ai/sdk';
 import { adjudicate } from './adjudicator.js';
-import type { InvestigationSession, SSEClient } from './types.js';
+import type { InvestigationSession, SSEClient, SSEEventEntry } from './types.js';
+import { Logger } from './logger.js';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { existsSync } from 'fs';
+
+const log = new Logger('planner');
 
 const MAX_STEPS = 12;
+const TOOL_TIMEOUT_MS = 30_000;
+const ANTHROPIC_TIMEOUT_MS = 60_000;
+const OVERALL_TIMEOUT_MS = 300_000;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+const MAX_EVENT_BUFFER = 200;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const WORKSPACE_ROOT = resolve(__dirname, '..', '..');
-const MCP_SERVER_ENTRY = resolve(WORKSPACE_ROOT, 'packages', 'mcp-server', 'src', 'index.ts');
+const MCP_SERVER_SRC = resolve(WORKSPACE_ROOT, 'packages', 'mcp-server', 'src', 'index.ts');
+const MCP_SERVER_DIST = resolve(WORKSPACE_ROOT, 'packages', 'mcp-server', 'dist', 'index.js');
 
-function createSession(target: string): InvestigationSession {
-  return {
-    id: crypto.randomUUID(),
-    target,
-    targetEntityId: null,
-    uboEntityId: null,
-    graphEdges: [],
-    steps: 0,
-    maxSteps: MAX_STEPS,
-    status: 'running',
-    verdict: null,
-    dossier: null,
-    narrative: null,
-    createdAt: new Date().toISOString(),
-  };
+function getMcpServerEntry(): { command: string; args: string[] } {
+  // Prefer compiled dist (Nitrostack decorators require proper compilation)
+  if (existsSync(MCP_SERVER_DIST)) {
+    return { command: 'node', args: [MCP_SERVER_DIST] };
+  }
+  // Fall back to tsx for dev
+  log.warn('MCP server dist not found, falling back to tsx', { dist: MCP_SERVER_DIST });
+  return { command: 'npx', args: ['--yes', 'tsx', MCP_SERVER_SRC] };
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`Timeout: ${label} exceeded ${ms}ms`)), ms)
+    ),
+  ]);
 }
 
 function buildGraph(edges: EvidenceEdge[]): GraphManager {
@@ -50,25 +62,60 @@ function buildGraph(edges: EvidenceEdge[]): GraphManager {
   return gm;
 }
 
-async function createMcpClient(): Promise<{ client: Client; transport: Transport }> {
-  const transport = new StdioClientTransport({
-    command: 'npx',
-    args: ['--yes', 'tsx', MCP_SERVER_ENTRY],
-    env: {
-      ...process.env as Record<string, string>,
-      MCP_TRANSPORT_TYPE: 'stdio',
-    },
-    cwd: WORKSPACE_ROOT,
-    stderr: 'pipe',
-  });
+async function createMcpClient(retries = 2): Promise<{ client: Client; transport: Transport }> {
+  const mcpServerUrl = process.env.MCP_SERVER_URL;
 
-  const client = new Client(
-    { name: 'bruteforce-orchestrator', version: '0.1.0' },
-    { capabilities: {} }
-  );
+  // If MCP_SERVER_URL is set, use HTTP transport instead of STDIO
+  if (mcpServerUrl) {
+    log.info('Using MCP HTTP transport', { url: mcpServerUrl });
+    const httpTransport = new StreamableHTTPClientTransport(new URL(mcpServerUrl));
+    const client = new Client(
+      { name: 'bruteforce-orchestrator', version: '0.1.0' },
+      { capabilities: {} }
+    );
+    await client.connect(httpTransport);
+    return { client, transport: httpTransport };
+  }
 
-  await client.connect(transport);
-  return { client, transport };
+  let lastError: Error | null = null;
+  const entry = getMcpServerEntry();
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const transport = new StdioClientTransport({
+        command: entry.command,
+        args: entry.args,
+        env: {
+          ...process.env as Record<string, string>,
+          MCP_TRANSPORT_TYPE: 'stdio',
+        },
+        cwd: WORKSPACE_ROOT,
+        stderr: 'pipe',
+      });
+
+      const client = new Client(
+        { name: 'bruteforce-orchestrator', version: '0.1.0' },
+        { capabilities: {} }
+      );
+
+      await client.connect(transport);
+
+      transport.onclose = () => {
+        log.warn('MCP transport closed unexpectedly');
+      };
+      transport.onerror = (error: Error) => {
+        log.error('MCP transport error', { error: error.message });
+      };
+
+      return { client, transport };
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error(String(err));
+      log.warn('MCP client connection attempt failed', { attempt, error: lastError.message });
+      if (attempt < retries) {
+        await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 500));
+      }
+    }
+  }
+  throw lastError || new Error('Failed to create MCP client');
 }
 
 function parseToolResponse(response: unknown): unknown {
@@ -134,10 +181,11 @@ async function runTool(
   args: Record<string, unknown>,
   existingEdges: EvidenceEdge[]
 ): Promise<{ result: unknown; newEdges: EvidenceEdge[] }> {
-  const response = await client.callTool({
-    name: tool,
-    arguments: args,
-  });
+  const response = await withTimeout(
+    client.callTool({ name: tool, arguments: args }),
+    TOOL_TIMEOUT_MS,
+    `tool:${tool}`
+  );
 
   const result = parseToolResponse(response);
 
@@ -149,113 +197,98 @@ async function runTool(
   return { result, newEdges };
 }
 
-function buildPlannerPrompt(
-  target: string,
-  targetEntityId: string | null,
-  uboEntityId: string | null,
-  steps: number,
-  edges: EvidenceEdge[]
-): string {
-  const gm = buildGraph(edges);
-  const allEntities = gm.getAllEntities();
-  const stats = gm.toEvidenceGraph();
-
-  return `You are an investigation Planner. Your job is to uncover the Ultimate Beneficial Owner (UBO) of "${target}" by calling deterministic tools.
-
-CRITICAL RULES (THE DETERMINISTIC WALL):
-- You NEVER assert facts about ownership, entities, or percentages.
-- You ONLY call tools. Every fact comes from a tool result.
-- The ONLY source of ownership percentages is the compute_control tool.
-- You NEVER produce numbers yourself.
-- When explaining your reasoning, describe your INTENT, never state facts.
-
-AVAILABLE TOOLS:
-1. resolve_entity(name?, jurisdiction?, identifiers?) — Find entities by name/jurisdiction/identifiers
-2. all_control_paths(from, to, max_depth?, min_edge_pct?) — Trace ownership chains between two entities
-3. compute_control(root, target) — Calculate effective ownership percentage
-4. find_shared_attributes(entity_id, attribute?) — Find entities sharing directors, addresses, or agents
-5. co_consignee_links(entity_id) — Find trade co-consignee relationships
-6. score_evidence(edge_ids) — Score evidence edges for confidence
-7. match_sanctions(entity_id) — Match an entity against sanctions lists
-
-INVESTIGATION STRATEGY:
-1. Start by resolving the target company name to an entity ID using resolve_entity
-2. Explore direct ownership paths (owns_pct edges)
-3. If direct paths are thin, pivot to shared directors, addresses, or agents
-4. When you find a potential UBO, compute control percentage using compute_control(root=<company_id>, target=<ubo_candidate_id>)
-5. Check if control >= 25% threshold and match against sanctions
-6. Use score_evidence to assess evidence quality on key edges
-
-CURRENT STATE:
-- Steps taken: ${steps}
-- Entities discovered: ${stats.nodes.length}
-- Edges discovered: ${stats.edges.length}
-${targetEntityId ? `- Target entity ID resolved as: ${targetEntityId}` : '- Target entity ID not yet resolved'}
-${uboEntityId ? `- Suspected UBO entity ID: ${uboEntityId}` : '- No UBO suspected yet'}
-${allEntities.map(e => `  - ${e.id}: ${e.name} (${e.type}, ${e.jurisdiction})`).join('\n')}
-
-You MUST respond with valid JSON ONLY in this exact format:
-{"rationale": "your reasoning for the next action", "tool": "tool_name", "args": {"arg1": "value1"}}
-OR if investigation is complete:
-{"rationale": "reason for stopping", "stop": true, "reason": "Veil pierced or exhausted all avenues"}`;
-}
-
 async function runExplainer(
-  mcpClient: Client | null,
+  mcpClient: Client,
   target: string,
   dossier: unknown,
-  sseClients: SSEClient[]
+  session: InvestigationSession,
+  clients: SSEClient[]
 ): Promise<string> {
   const apiKey = ANTHROPIC_API_KEY;
   if (!apiKey) return '';
 
   const anthropic = new Anthropic({ apiKey });
 
-  let systemPrompt = 'You are an investigation Explainer. Generate clear, sourced narrative only. Never invent facts.';
-  if (mcpClient) {
-    try {
-      const promptResponse = await mcpClient.getPrompt({
-        name: 'explanation_playbook',
-        arguments: { target_company: target },
-      });
-      const promptContent = promptResponse.messages[0]?.content;
-      if (promptContent && promptContent.type === 'text') {
-        systemPrompt = promptContent.text;
-      }
-    } catch (e) {
-      console.warn('Failed to fetch explanation_playbook prompt', e);
-    }
-  }
-
-  const prompt = `${systemPrompt}\n\nHere is the complete dossier with all tool outputs:\n\n${JSON.stringify(dossier, null, 2)}\n\nGenerate a clear, professional investigation summary with sourced claims only.`;
-
-  const msg = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 2048,
-    temperature: 0,
-    system: 'You are an investigation Explainer. Generate clear, sourced narrative only. Never invent facts.',
-    messages: [{ role: 'user', content: prompt }],
+  const explainerResponse = await mcpClient.getPrompt({
+    name: 'explanation_playbook',
+    arguments: { target_company: target },
   });
+  const explainerPrompt = explainerResponse.messages[0]?.content?.type === 'text' ? explainerResponse.messages[0].content.text : '';
+
+  const sarResponse = await mcpClient.getPrompt({
+    name: 'sar_summary_template',
+    arguments: {
+      target_company: target,
+      ubo_name: session.uboEntityId || 'Unknown UBO',
+    },
+  });
+  const sarTemplate = sarResponse.messages.map(m => m.content?.type === 'text' ? m.content.text : '').join('\n\n');
+
+  const prompt = `Here is the dossier:\n${JSON.stringify(dossier, null, 2)}\n\nNow fill out the following SAR template based ONLY on the dossier facts:\n${sarTemplate}`;
+
+  const msg = await withTimeout(
+    anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2048,
+      temperature: 0,
+      system: explainerPrompt,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+    ANTHROPIC_TIMEOUT_MS,
+    'anthropic:explainer'
+  );
 
   const content = msg.content[0];
   const narrative = content.type === 'text' ? content.text : '';
 
-  streamToAll(sseClients, 'explainer_narrative', { narrative });
+  emitEvent(session, clients, 'explainer_narrative', { narrative });
 
   return narrative;
 }
 
+function emitEvent(session: InvestigationSession, clients: SSEClient[], event: string, data: unknown): void {
+  const id = session.nextEventId++;
+  const entry: SSEEventEntry = { id, event, data, timestamp: new Date().toISOString() };
+  session.eventBuffer.push(entry);
+  if (session.eventBuffer.length > MAX_EVENT_BUFFER) {
+    session.eventBuffer.splice(0, session.eventBuffer.length - MAX_EVENT_BUFFER);
+  }
+  for (const client of clients) {
+    client.send(event, data);
+  }
+}
+
 export async function runInvestigation(
   target: string,
-  sseClients: SSEClient[]
+  clients: SSEClient[],
+  session?: InvestigationSession
 ): Promise<InvestigationSession> {
-  const session = createSession(target);
+  const investigationId = session?.id || 'unknown';
   const apiKey = ANTHROPIC_API_KEY;
+
+  if (!session) {
+    session = {
+      id: investigationId,
+      target,
+      targetEntityId: null,
+      uboEntityId: null,
+      graphEdges: [],
+      steps: 0,
+      maxSteps: MAX_STEPS,
+      status: 'running',
+      verdict: null,
+      dossier: null,
+      narrative: null,
+      createdAt: new Date().toISOString(),
+      eventBuffer: [],
+      nextEventId: 1,
+    };
+  }
 
   if (!apiKey) {
     session.status = 'error';
     session.error = 'ANTHROPIC_API_KEY not configured';
-    streamToAll(sseClients, 'error', { message: 'ANTHROPIC_API_KEY not configured' });
+    emitEvent(session, clients, 'error', { message: 'ANTHROPIC_API_KEY not configured' });
     return session;
   }
 
@@ -263,31 +296,68 @@ export async function runInvestigation(
   let mcpClient: Client | null = null;
   let mcpTransport: Transport | null = null;
   let lastControlValue = 0;
+  const startTime = Date.now();
 
   try {
     const mcp = await createMcpClient();
     mcpClient = mcp.client;
     mcpTransport = mcp.transport;
 
-    streamToAll(sseClients, 'mcp_connected', { message: 'Connected to MCP server' });
+    log.info('MCP client connected', { investigation_id: session.id });
+    emitEvent(session, clients, 'mcp_connected', { message: 'Connected to MCP server' });
 
-    while (session.steps < session.maxSteps && session.status === 'running') {
-      const promptResponse = await mcpClient.getPrompt({
+    const promptResponse = await withTimeout(
+      mcpClient.getPrompt({
         name: 'investigation_playbook',
         arguments: { target_company: target },
-      });
-      const promptContent = promptResponse.messages[0]?.content;
-      const systemPrompt = promptContent && promptContent.type === 'text' ? promptContent.text : 'You are an investigation planner.';
+      }),
+      TOOL_TIMEOUT_MS,
+      'mcp:getPrompt:investigation_playbook'
+    );
+    const promptContent = promptResponse.messages[0]?.content;
+    const systemPromptText = promptContent && promptContent.type === 'text' ? promptContent.text : '';
 
-      const stats = `\n\nCURRENT STATE:\n- Steps taken: ${session.steps}\n- Target entity ID: ${session.targetEntityId || 'unknown'}\n- Suspected UBO ID: ${session.uboEntityId || 'none'}\n\nYou MUST respond with valid JSON ONLY in this exact format:\n{"rationale": "your reasoning for the next action", "tool": "tool_name", "args": {"arg1": "value1"}}\nOR if investigation is complete:\n{"rationale": "reason for stopping", "stop": true, "reason": "Veil pierced or exhausted all avenues"}`;
+    while (session.steps < session.maxSteps && session.status === 'running') {
+      // Check overall timeout
+      if (Date.now() - startTime > OVERALL_TIMEOUT_MS) {
+        log.warn('Investigation timed out', { investigation_id: session.id, elapsed: Date.now() - startTime });
+        session.status = 'exhausted';
+        emitEvent(session, clients, 'warning', { message: 'Investigation timed out after 5 minutes' });
+        break;
+      }
 
-      const msg = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        temperature: 0,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: systemPrompt + stats }],
-      });
+      const gm = buildGraph(session.graphEdges);
+      const allEntities = gm.getAllEntities();
+      const stats = gm.toEvidenceGraph();
+
+      const currentState = `CURRENT STATE:
+- Steps taken: ${session.steps}
+- Entities discovered: ${stats.nodes.length}
+- Edges discovered: ${stats.edges.length}
+${session.targetEntityId ? `- Target entity ID resolved as: ${session.targetEntityId}` : '- Target entity ID not yet resolved'}
+${session.uboEntityId ? `- Suspected UBO entity ID: ${session.uboEntityId}` : '- No UBO suspected yet'}
+${allEntities.map(e => `  - ${e.id}: ${e.name} (${e.type}, ${e.jurisdiction})`).join('\n')}`;
+
+      let msg;
+      try {
+        msg = await withTimeout(
+          anthropic.messages.create({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1024,
+            temperature: 0,
+            system: systemPromptText,
+            messages: [{ role: 'user', content: currentState }],
+          }),
+          ANTHROPIC_TIMEOUT_MS,
+          'anthropic:planner'
+        );
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        log.warn('Anthropic API timeout or error', { investigation_id: session.id, step: session.steps, error: message });
+        emitEvent(session, clients, 'warning', { message: `Planner API error: ${message}` });
+        session.steps++;
+        continue;
+      }
 
       const content = msg.content[0];
       if (content.type !== 'text') {
@@ -313,30 +383,42 @@ export async function runInvestigation(
         } else {
           session.status = 'exhausted';
         }
-        streamToAll(sseClients, 'planner_decision', { step: session.steps, action: 'stop', rationale });
+        emitEvent(session, clients, 'planner_decision', { step: session.steps, action: 'stop', rationale });
         break;
       }
 
       const tool = parsed.tool as string;
       const args = (parsed.args as Record<string, unknown>) || {};
 
-      streamToAll(sseClients, 'planner_decision', { step: session.steps, tool, args, rationale });
+      emitEvent(session, clients, 'planner_decision', { step: session.steps, tool, args, rationale });
 
-      const { result, newEdges } = await runTool(mcpClient, tool, args, session.graphEdges);
+      let result: unknown = {};
+      let newEdges: EvidenceEdge[] = [];
+      try {
+        const toolResult = await runTool(mcpClient, tool, args, session.graphEdges);
+        result = toolResult.result;
+        newEdges = toolResult.newEdges;
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        log.error('Tool call failed', { investigation_id: session.id, tool, error: message });
+        emitEvent(session, clients, 'warning', { message: `Tool ${tool} failed: ${message}` });
+        session.steps++;
+        continue;
+      }
 
       session.graphEdges.push(...newEdges);
 
-      streamToAll(sseClients, 'tool_result', { step: session.steps, tool, args, result, new_edges_count: newEdges.length });
+      emitEvent(session, clients, 'tool_result', { step: session.steps, tool, args, result, new_edges_count: newEdges.length });
 
       for (const edge of newEdges) {
-        streamToAll(sseClients, 'edge_found', { edge, step: session.steps });
+        emitEvent(session, clients, 'edge_found', { edge, step: session.steps });
       }
 
       if (tool === 'resolve_entity') {
         const r = result as { matches?: Array<{ entity_id: string }> };
         if (r.matches && r.matches.length > 0 && !session.targetEntityId) {
           session.targetEntityId = r.matches[0].entity_id;
-          streamToAll(sseClients, 'target_resolved', { entity_id: session.targetEntityId, step: session.steps });
+          emitEvent(session, clients, 'target_resolved', { entity_id: session.targetEntityId, step: session.steps });
         }
       }
 
@@ -344,12 +426,12 @@ export async function runInvestigation(
         const r = result as { effective_control?: number; meets_threshold?: boolean };
         lastControlValue = r.effective_control ?? 0;
         session.uboEntityId = (args.target as string) || session.uboEntityId;
-        streamToAll(sseClients, 'control_update', { effective_control: lastControlValue, meets_threshold: r.meets_threshold ?? false, step: session.steps });
+        emitEvent(session, clients, 'control_update', { effective_control: lastControlValue, meets_threshold: r.meets_threshold ?? false, step: session.steps });
       }
 
       if (tool === 'match_sanctions') {
         const r = result as { matches?: Array<unknown> };
-        streamToAll(sseClients, 'sanction_hit', { matches: r.matches ?? [], step: session.steps });
+        emitEvent(session, clients, 'sanction_hit', { matches: r.matches ?? [], step: session.steps });
       }
 
       const sanctionsHit = session.graphEdges.some(e => e.type === 'listed_sanctioned');
@@ -361,7 +443,7 @@ export async function runInvestigation(
       });
 
       session.verdict = verdict;
-      streamToAll(sseClients, 'verdict_update', { verdict, step: session.steps });
+      emitEvent(session, clients, 'verdict_update', { verdict, step: session.steps });
 
       if (verdict.pierced) {
         session.status = 'pierced';
@@ -378,38 +460,46 @@ export async function runInvestigation(
     // Assemble dossier via MCP
     if (session.targetEntityId && mcpClient) {
       try {
-        const dossierResponse = await mcpClient.callTool({
-          name: 'assemble_dossier',
-          arguments: {
-            root: session.targetEntityId,
-            target: session.uboEntityId || session.targetEntityId,
-          },
-        });
+        const dossierResponse = await withTimeout(
+          mcpClient.callTool({
+            name: 'assemble_dossier',
+            arguments: {
+              root: session.targetEntityId,
+              target: session.uboEntityId || session.targetEntityId,
+            },
+          }),
+          TOOL_TIMEOUT_MS,
+          'tool:assemble_dossier'
+        );
         const dossier = parseToolResponse(dossierResponse);
         session.dossier = dossier as InvestigationSession['dossier'];
-        streamToAll(sseClients, 'dossier_assembled', { dossier });
+        emitEvent(session, clients, 'dossier_assembled', { dossier });
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
-        streamToAll(sseClients, 'error', { message: `Failed to assemble dossier: ${message}` });
+        log.error('Dossier assembly failed', { investigation_id: session.id, error: message });
+        emitEvent(session, clients, 'error', { message: `Failed to assemble dossier: ${message}` });
       }
     }
 
-    // Explainer step (runs after dossier assembly, even if not pierced)
+    // Explainer step
     if (session.dossier && session.status !== 'error') {
       try {
-        const narrative = await runExplainer(mcpClient, target, session.dossier, sseClients);
+        const narrative = await runExplainer(mcpClient, target, session.dossier, session, clients);
         session.narrative = narrative;
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
-        streamToAll(sseClients, 'error', { message: `Explainer failed: ${message}` });
+        log.warn('Explainer failed', { investigation_id: session.id, error: message });
+        emitEvent(session, clients, 'error', { message: `Explainer failed: ${message}` });
       }
     }
 
-    streamToAll(sseClients, 'investigation_complete', { status: session.status, steps: session.steps });
+    log.info('Investigation finished', { investigation_id: session.id, status: session.status, steps: session.steps });
+    emitEvent(session, clients, 'investigation_complete', { status: session.status, steps: session.steps });
   } catch (err: unknown) {
     session.status = 'error';
     session.error = err instanceof Error ? err.message : String(err);
-    streamToAll(sseClients, 'error', { message: session.error });
+    log.error('Investigation crashed', { investigation_id: session.id, error: session.error });
+    emitEvent(session, clients, 'error', { message: session.error });
   } finally {
     if (mcpTransport) {
       try { await mcpTransport.close(); } catch {}
@@ -417,10 +507,4 @@ export async function runInvestigation(
   }
 
   return session;
-}
-
-function streamToAll(clients: SSEClient[], event: string, data: unknown): void {
-  for (const client of clients) {
-    client.send(event, data);
-  }
 }

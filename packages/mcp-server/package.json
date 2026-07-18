@@ -6,9 +6,10 @@
   "main": "./dist/index.js",
   "scripts": {
     "dev": "tsx src/index.ts",
-    "build": "tsc",
+    "build": "tsc && node scripts/copy-seed.js",
     "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "copy-seed": "node scripts/copy-seed.js"
   },
   "dependencies": {
     "@bruteforce/core": "^0.1.0",

@@ -1,5 +1,6 @@
-import { ToolDecorator as Tool, z, ExecutionContext } from '@nitrostack/core';
+import { ToolDecorator as Tool, ControllerDecorator as Controller, z, ExecutionContext } from '@nitrostack/core';
 
+@Controller()
 export class HelloTools {
   @Tool({
     name: 'hello_bruteforce',

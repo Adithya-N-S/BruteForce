@@ -1,6 +1,6 @@
 import { Injectable } from '@nitrostack/core';
 import { GraphManager } from '@bruteforce/core';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -25,8 +25,18 @@ export class GraphService {
   }
 
   private getSeedPath(filename: string): string {
+    const envDir = process.env.SEED_DATA_DIR;
+    if (envDir) {
+      return resolve(envDir, filename);
+    }
     const currentDir = dirname(fileURLToPath(import.meta.url));
-    return resolve(currentDir, '..', '..', '..', 'data', 'seed', filename);
+    // Try monorepo path first (local dev: packages/data/seed/)
+    const monorepoPath = resolve(currentDir, '..', '..', '..', 'data', 'seed', filename);
+    if (existsSync(monorepoPath)) {
+      return monorepoPath;
+    }
+    // Fall back to bundled path (deployment: packages/mcp-server/data/seed/)
+    return resolve(currentDir, '..', '..', 'data', 'seed', filename);
   }
 
   private loadSeedData(): void {

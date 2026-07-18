@@ -6,9 +6,7 @@
     "download": "bash ./download.sh",
     "ingest": "npx tsx ingest/run.ts",
     "validate": "npx tsx ingest/validate.ts",
-    "phase3": "npx tsx ingest/phase3-demo.ts",
-    "phase3:planted": "npx tsx ingest/phase3-planted-case.ts",
-    "phase3:perturb": "npx tsx ingest/phase3-perturb-demo.ts"
+    "evade": "npx tsx evader/index.ts"
   },
   "dependencies": {
     "csv-parse": "^5.6.0",

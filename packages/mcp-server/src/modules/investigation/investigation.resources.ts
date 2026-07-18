@@ -1,6 +1,7 @@
-import { ResourceDecorator as Resource, ExecutionContext } from '@nitrostack/core';
+import { ResourceDecorator as Resource, ControllerDecorator as Controller, ExecutionContext } from '@nitrostack/core';
 import { GraphService } from '../../services/graph.service.js';
 
+@Controller()
 export class InvestigationResources {
   constructor(private readonly graphService: GraphService) {}
 

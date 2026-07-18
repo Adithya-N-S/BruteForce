@@ -1,5 +1,18 @@
 import type { EvidenceEdge, AdjudicatorVerdict, Dossier } from '@bruteforce/core';
 
+export interface SSEClient {
+  id: string;
+  send(event: string, data: unknown): void;
+  close(): void;
+}
+
+export interface SSEEventEntry {
+  id: number;
+  event: string;
+  data: unknown;
+  timestamp: string;
+}
+
 export interface InvestigationSession {
   id: string;
   target: string;
@@ -14,12 +27,8 @@ export interface InvestigationSession {
   narrative: string | null;
   createdAt: string;
   error?: string;
-}
-
-export interface SSEClient {
-  id: string;
-  send(event: string, data: unknown): void;
-  close(): void;
+  eventBuffer: SSEEventEntry[];
+  nextEventId: number;
 }
 
 export interface PlannerAction {

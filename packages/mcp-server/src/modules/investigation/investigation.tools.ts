@@ -1,4 +1,4 @@
-import { ToolDecorator as Tool, Widget, z, ExecutionContext } from '@nitrostack/core';
+import { ToolDecorator as Tool, ControllerDecorator as Controller, Widget, z, ExecutionContext } from '@nitrostack/core';
 import { GraphService } from '../../services/graph.service.js';
 import {
   resolveEntity,
@@ -11,6 +11,7 @@ import {
   assembleDossier,
 } from '@bruteforce/core';
 
+@Controller()
 export class InvestigationTools {
   constructor(private readonly graphService: GraphService) {}
 

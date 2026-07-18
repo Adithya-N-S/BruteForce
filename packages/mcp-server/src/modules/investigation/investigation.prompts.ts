@@ -1,6 +1,7 @@
-import { PromptDecorator as Prompt, ExecutionContext } from '@nitrostack/core';
+import { PromptDecorator as Prompt, ControllerDecorator as Controller, ExecutionContext } from '@nitrostack/core';
 import { GraphService } from '../../services/graph.service.js';
 
+@Controller()
 export class InvestigationPrompts {
   constructor(private readonly graphService: GraphService) {}
   @Prompt({
