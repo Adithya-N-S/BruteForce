@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "case": "planted-ubo-001",
+    "description": "Synthetic planted case (D4 Phase 3): clean importer 'Company A' reaches a sanctioned UBO via a multi-hop ownership chain AND a shared-registered-address alternate route. Every edge is sourced (record_id + reliability_tier). The linkage is synthetic and labelled; the method — not the data — is the contribution.",
+    "sources_declared": [
+      "synthetic (planted demo case — labelled)",
+      "OpenSanctions (sanctions list entry shape)",
+      "ICIJ Offshore Leaks schema (registry/address shape)"
+    ]
+  },
+  "nodes": [
+    { "id": "ent_company_a", "type": "company", "name": "Company A", "jurisdiction": "CYM", "attributes": { "role": "target" } },
+    { "id": "ent_holdco_b", "type": "company", "name": "HoldCo B Ltd", "jurisdiction": "BVI" },
+    { "id": "ent_shell_c", "type": "company", "name": "Shell C Corp", "jurisdiction": "PAN" },
+    { "id": "ent_ubo_x", "type": "person", "name": "Ivan Petrov", "jurisdiction": "RUS", "attributes": { "sanctioned": true } },
+    { "id": "addr_road_1", "type": "address", "name": "1 Road Town, Tortola, VG1110" },
+    { "id": "ent_agent_xyz", "type": "agent", "name": "XYZ Nominees Ltd" }
+  ],
+  "edges": [
+    { "id": "e1", "from": "ent_holdco_b", "to": "ent_company_a", "type": "owns_pct", "value": 0.51, "source_dataset": "registry", "record_id": "rec_4471", "extraction_method": "registry_filing", "reliability_tier": 1 },
+    { "id": "e2", "from": "ent_shell_c", "to": "ent_holdco_b", "type": "owns_pct", "value": 0.62, "source_dataset": "registry", "record_id": "rec_4472", "extraction_method": "registry_filing", "reliability_tier": 1 },
+    { "id": "e3", "from": "ent_ubo_x", "to": "ent_shell_c", "type": "owns_pct", "value": 0.98, "source_dataset": "registry", "record_id": "rec_4473", "extraction_method": "registry_filing", "reliability_tier": 1 },
+    { "id": "e4", "from": "ent_ubo_x", "to": "addr_road_1", "type": "registered_at", "value": 1, "source_dataset": "registry", "record_id": "rec_4511", "extraction_method": "registry_filing", "reliability_tier": 1 },
+    { "id": "e5", "from": "ent_company_a", "to": "addr_road_1", "type": "registered_at", "value": 1, "source_dataset": "registry", "record_id": "rec_4512", "extraction_method": "registry_filing", "reliability_tier": 1 },
+    { "id": "e6", "from": "ent_agent_xyz", "to": "ent_company_a", "type": "agent_for", "value": 1, "source_dataset": "registry", "record_id": "rec_4521", "extraction_method": "registry_filing", "reliability_tier": 1 },
+    { "id": "e7", "from": "ent_agent_xyz", "to": "ent_shell_c", "type": "agent_for", "value": 1, "source_dataset": "registry", "record_id": "rec_4522", "extraction_method": "registry_filing", "reliability_tier": 1 }
+  ],
+  "sanctions": [
+    { "sanction_id": "san_ofac_0991", "list": "OFAC", "name": "Ivan Petrov", "aliases": ["I. Petrov", "Petrov, I."], "score": 0.96 }
+  ]
+}
