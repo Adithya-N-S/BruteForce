@@ -24,15 +24,27 @@ export default function EvidenceGraph() {
 
   const data: any = getToolOutput<any>();
 
-  if (!data || !data.paths || data.paths.length === 0) {
+  if (!data || typeof data !== 'object') {
+    return (
+      <div style={styles.container}>
+        <div style={styles.empty}>Waiting for tool output…</div>
+      </div>
+    );
+  }
+
+  if (!data.paths || !Array.isArray(data.paths) || data.paths.length === 0) {
     return (
       <div style={styles.container}>
         <div style={styles.empty}>No ownership paths found.</div>
+        <pre style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem' }}>
+          {JSON.stringify(data, null, 2)}
+        </pre>
       </div>
     );
   }
 
   const handleEdgeClick = async (edge: any) => {
+    if (!edge || !edge.id) return;
     const edgeId = edge.id || `edge-${edge.from}-${edge.to}`;
     setLoadingScore(true);
     try {

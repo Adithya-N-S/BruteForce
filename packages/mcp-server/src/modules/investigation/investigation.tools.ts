@@ -4,11 +4,6 @@ import {
   resolveEntity,
   allControlPaths,
   computeControl,
-  findSharedAttributes,
-  coConsigneeLinks,
-  scoreEvidence,
-  matchSanctions,
-  assembleDossier,
 } from '@bruteforce/core';
 
 @Controller()
@@ -24,6 +19,7 @@ export class InvestigationTools {
       identifiers: z.array(z.string()).optional().describe('Known identifiers to match against'),
     }),
   })
+  @Widget('entity-resolver')
   async resolveEntityTool(
     input: { name?: string; jurisdiction?: string; identifiers?: string[] },
     ctx: ExecutionContext
@@ -61,11 +57,24 @@ export class InvestigationTools {
     }
 
     try {
-      const paths = allControlPaths(graph, {
+      const rawPaths = allControlPaths(graph, {
         from: input.from,
         to: input.to,
         maxDepth: input.max_depth ?? 6,
         minEdgePct: input.min_edge_pct,
+      });
+      const paths = rawPaths.map(p => {
+        const nodes = [input.from, ...p.path.map(edge => edge.to)];
+        const edges = p.path.map((edge, i) => ({
+          id: edge.id,
+          from: edge.from,
+          to: edge.to,
+          pct: p.percentages[i] ?? edge.value ?? 0,
+          type: edge.type,
+          source_dataset: edge.source_dataset,
+          record_id: edge.record_id,
+        }));
+        return { nodes, edges, metadata: p.metadata };
       });
       const result = { paths };
       this.graphService.appendAudit({ tool: 'all_control_paths', input, output: result });
@@ -112,147 +121,6 @@ export class InvestigationTools {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
       return { error: message, effective_control: 0, meets_threshold: false };
-    }
-  }
-
-  @Tool({
-    name: 'find_shared_attributes',
-    description: 'Find entities that share a common attribute (director, address, agent, phone) with the given entity. Used to pivot investigative modality when direct ownership paths are thin.',
-    inputSchema: z.object({
-      entity_id: z.string().describe('Entity ID to find shared attributes for'),
-      attribute: z.enum(['director', 'address', 'agent', 'phone']).optional().describe('Attribute type to check. If omitted, checks all types.'),
-    }),
-  })
-  async findSharedAttributesTool(
-    input: { entity_id: string; attribute?: 'director' | 'address' | 'agent' | 'phone' },
-    ctx: ExecutionContext
-  ) {
-    const graph = this.graphService.getGraph();
-    try {
-      const result = findSharedAttributes(graph, {
-        entity_id: input.entity_id,
-        attribute: input.attribute,
-      });
-      this.graphService.appendAudit({ tool: 'find_shared_attributes', input, output: result });
-      return result;
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return { error: message, links: [] };
-    }
-  }
-
-  @Tool({
-    name: 'co_consignee_links',
-    description: 'Find trade co-consignee relationships for a given entity. Determines which other entities share shipments with the target entity via bill-of-lading records.',
-    inputSchema: z.object({
-      entity_id: z.string().describe('Entity ID to find co-consignee links for'),
-    }),
-  })
-  async coConsigneeLinksTool(
-    input: { entity_id: string },
-    ctx: ExecutionContext
-  ) {
-    const graph = this.graphService.getGraph();
-    try {
-      const result = coConsigneeLinks(graph.toEvidenceGraph(), { entity_id: input.entity_id });
-      this.graphService.appendAudit({ tool: 'co_consignee_links', input, output: result });
-      return result;
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return { error: message, links: [] };
-    }
-  }
-
-  @Tool({
-    name: 'score_evidence',
-    description: 'Deterministically score evidence edges for confidence. Computes a weighted average of dataset quality, reliability tier, recency, completeness, and provenance. Returns the ONLY source of confidence numbers on screen.',
-    inputSchema: z.object({
-      edge_ids: z.array(z.string()).describe('Array of evidence edge IDs to score'),
-    }),
-  })
-  @Widget('source-card')
-  async scoreEvidenceTool(
-    input: { edge_ids: string[] },
-    ctx: ExecutionContext
-  ) {
-    const graph = this.graphService.getGraph();
-    try {
-      const scored: Array<{ id: string; score: number; level: string; explanation: string }> = [];
-      for (const edgeId of input.edge_ids) {
-        const edge = graph.getRelationship(edgeId);
-        if (edge) {
-          const result = scoreEvidence(edge);
-          scored.push({ id: edgeId, score: result.score, level: result.level, explanation: result.explanation });
-        }
-      }
-      const result = { scored };
-      this.graphService.appendAudit({ tool: 'score_evidence', input, output: result });
-      return result;
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return { error: message, scored: [] };
-    }
-  }
-
-  @Tool({
-    name: 'match_sanctions',
-    description: 'Deterministically match an entity against the loaded sanctions list. Uses Jaro-Winkler similarity on entity name against sanctioned names. Returns matches with scores and rationale.',
-    inputSchema: z.object({
-      entity_id: z.string().describe('Entity ID to check against sanctions lists'),
-    }),
-  })
-  async matchSanctionsTool(
-    input: { entity_id: string },
-    ctx: ExecutionContext
-  ) {
-    const graph = this.graphService.getGraph();
-    try {
-      const entity = graph.getEntity(input.entity_id);
-      if (!entity) {
-        return { matches: [], error: `Entity not found: ${input.entity_id}` };
-      }
-      const sanctionsList = this.graphService.getSanctionsList();
-      const result = matchSanctions(entity.name, sanctionsList);
-      this.graphService.appendAudit({ tool: 'match_sanctions', input, output: result });
-      return result;
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return { matches: [], error: message };
-    }
-  }
-
-  @Tool({
-    name: 'assemble_dossier',
-    description: 'Assemble a complete investigation dossier for a root-target pair. Combines control computation, evidence scoring, and sanctions matching into a single audit-ready report.',
-    inputSchema: z.object({
-      root: z.string().describe('The company under investigation (starting entity ID)'),
-      target: z.string().describe('The suspected UBO / controlling entity (target entity ID)'),
-    }),
-  })
-  @Widget('dossier-view')
-  async assembleDossierTool(
-    input: { root: string; target: string },
-    ctx: ExecutionContext
-  ) {
-    const graph = this.graphService.getGraph();
-    try {
-      const sanctionsList = this.graphService.getSanctionsList();
-      const entityEnt = graph.getEntity(input.target);
-      if (!entityEnt) {
-        return { error: `Entity not found: ${input.target}` };
-      }
-
-      const sanctionMatches = matchSanctions(entityEnt.name, sanctionsList);
-      const dossier = assembleDossier(graph, {
-        root: input.root,
-        target: input.target,
-      }, sanctionMatches);
-
-      this.graphService.appendAudit({ tool: 'assemble_dossier', input, output: dossier });
-      return dossier;
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      return { error: message };
     }
   }
 }

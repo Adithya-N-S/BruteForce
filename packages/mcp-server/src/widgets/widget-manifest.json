@@ -2,6 +2,30 @@
   "version": "1.0.0",
   "widgets": [
     {
+      "uri": "/entity-resolver",
+      "name": "Entity Resolver",
+      "description": "Displays entity resolution results returned by resolve_entity, showing matched entities with similarity scores",
+      "examples": [
+        {
+          "name": "Sample Entity Match",
+          "description": "Entity resolution result with matched features",
+          "data": {
+            "matches": [
+              {
+                "entity_id": "plt-pacific-rim",
+                "name": "Pacific Rim Trading Co Ltd",
+                "type": "company",
+                "jurisdiction": "BVI",
+                "score": 0.92,
+                "matched_features": ["name", "jurisdiction"]
+              }
+            ]
+          }
+        }
+      ],
+      "tags": ["entity", "resolution", "search"]
+    },
+    {
       "uri": "/evidence-graph",
       "name": "Evidence Graph",
       "description": "Renders ownership paths returned by the all_control_paths MCP tool",
