@@ -84,6 +84,7 @@ export {
   type ConfidenceSummary,
   type RecommendationsSection,
   type ComprehensiveDossier,
+  matchSanctions,
 } from './algorithms/index.js';
 
 // Utilities

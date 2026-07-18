@@ -1,7 +1,7 @@
 /**
- * @module @veilbreaker/core
+ * @module @bruteforce/core
  * @description
- * Public API surface of the VEILBREAKER deterministic core.
+ * Public API surface of the BruteForce deterministic core.
  *
  * This package contains **only** pure, deterministic logic:
  *   - Typed domain model (`types`)
@@ -13,7 +13,7 @@
  *
  * @example
  * ```ts
- * import { GraphManager, resolveEntity } from '@veilbreaker/core';
+ * import { GraphManager, resolveEntity } from '@bruteforce/core';
  *
  * const gm = new GraphManager();
  * gm.addEntity({ id: 'e1', type: 'company', name: 'Acme', jurisdiction: 'US', attributes: {} });
@@ -23,6 +23,6 @@
  */
 export type { EntityId, EntityType, EvidenceEdgeType, EvidenceDataset, ReliabilityTier, ConfidenceBand, ExtractionMethod, EntityNode, EvidenceEdge, EvidenceGraph, SourceRecord, EvidenceConfidence, ControlPath, ComputeControlResult, ResolveEntityInput, ResolveEntityMatch, ResolveEntityResult, SanctionMatch, MatchSanctionsResult, Dossier, AuditEntry, AdjudicatorVerdict, } from './types.js';
 export { GraphManager, GraphError, DuplicateEntityError, EntityNotFoundError, DuplicateEdgeError, EdgeNotFoundError, } from './graph/index.js';
-export { resolveEntity, allControlPaths, type ControlPathResult, computeControl, type ComputeControlOutput, type OwnershipBreakdownEntry, scoreEvidence, type ScoreWeights, type ScoreEvidenceResult, DEFAULT_WEIGHTS, findSharedAttributes, type SharedAttributeLink, coConsigneeLinks, matchSanctions, assembleDossier, } from './algorithms/index.js';
+export { resolveEntity, allControlPaths, type ControlPathResult, computeControl, type ComputeControlOutput, type OwnershipBreakdownEntry, scoreEvidence, type ScoreWeights, type ScoreEvidenceResult, type ScoreBreakdown, DEFAULT_WEIGHTS, findSharedAttributes, type SharedAttributeLink, type SharedAttribute, type SharedAttributeMatch, type SharedAttributesResult, coConsigneeLinks, assembleDossier, type InvestigationSummary, type EffectiveOwnershipSummary, type EvidenceSummary, type ConfidenceSummary, type RecommendationsSection, type ComprehensiveDossier, matchSanctions, } from './algorithms/index.js';
 export { stripDiacritics, normalizeString, normalizeEntityName, jaroSimilarity, jaroWinklerSimilarity, isNormalizedExactMatch, hasIdentifierOverlap, } from './utils/index.js';
 //# sourceMappingURL=index.d.ts.map

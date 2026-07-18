@@ -1,19 +1,28 @@
-import { GraphManager, resolveEntity, allControlPaths, computeControl, findSharedAttributes, coConsigneeLinks, jaroWinklerSimilarity, normalizeEntityName } from '@bruteforce/core';
+import { GraphManager } from '@bruteforce/core';
+import { Client } from '@modelcontextprotocol/sdk/client';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio';
 import Anthropic from '@anthropic-ai/sdk';
 import { adjudicate } from './adjudicator.js';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 const MAX_STEPS = 12;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const WORKSPACE_ROOT = resolve(__dirname, '..', '..');
+const MCP_SERVER_ENTRY = resolve(WORKSPACE_ROOT, 'packages', 'mcp-server', 'src', 'index.ts');
 function createSession(target) {
     return {
         id: crypto.randomUUID(),
         target,
         targetEntityId: null,
+        uboEntityId: null,
         graphEdges: [],
         steps: 0,
         maxSteps: MAX_STEPS,
         status: 'running',
         verdict: null,
         dossier: null,
+        narrative: null,
         createdAt: new Date().toISOString(),
     };
 }
@@ -36,127 +45,88 @@ function buildGraph(edges) {
     }
     return gm;
 }
-async function runTool(tool, args, sessionsEdges, sanctionsList) {
-    const gm = buildGraph(sessionsEdges);
-    let result = {};
-    let newEdges = [];
-    switch (tool) {
-        case 'resolve_entity': {
-            const entities = gm.getAllEntities();
-            const ents = resolveEntity(entities, {
-                name: args.name,
-                jurisdiction: args.jurisdiction,
-                identifiers: args.identifiers,
-            });
-            result = ents;
-            break;
-        }
-        case 'all_control_paths': {
-            const from = args.from;
-            const to = args.to;
-            if (!to) {
-                result = { error: 'Target entity ID (to) is required', paths: [] };
-                break;
-            }
-            try {
-                const paths = allControlPaths(gm, { from, to, maxDepth: args.max_depth ?? 6, minEdgePct: args.min_edge_pct });
-                result = { paths };
-                for (const path of paths) {
-                    for (const edge of path.path) {
-                        if (!sessionsEdges.find(e => e.id === edge.id)) {
-                            newEdges.push(edge);
-                        }
-                    }
-                }
-            }
-            catch (err) {
-                result = { error: err instanceof Error ? err.message : String(err), paths: [] };
-            }
-            break;
-        }
-        case 'compute_control': {
-            const root = args.root;
-            const target = args.target;
-            try {
-                const paths = allControlPaths(gm, { from: target, to: root, maxDepth: 6 });
-                const controlResult = computeControl(paths);
-                result = {
-                    effective_control: controlResult.effectiveControl,
-                    contributing_paths: controlResult.contributingPaths,
-                    threshold: 0.25,
-                    meets_threshold: controlResult.thresholdReached,
-                    explanation: controlResult.explanation,
-                };
-            }
-            catch (err) {
-                result = { error: err instanceof Error ? err.message : String(err), effective_control: 0, meets_threshold: false };
-            }
-            break;
-        }
-        case 'find_shared_attributes': {
-            try {
-                const saResult = findSharedAttributes(gm, { entity_id: args.entity_id, attribute: args.attribute });
-                result = saResult;
-                for (const link of saResult.links) {
-                    for (const edge of link.edges) {
-                        if (!sessionsEdges.find(e => e.id === edge.id)) {
-                            newEdges.push(edge);
-                        }
-                    }
-                }
-            }
-            catch (err) {
-                result = { error: err instanceof Error ? err.message : String(err), links: [] };
-            }
-            break;
-        }
-        case 'co_consignee_links': {
-            try {
-                const ccResult = coConsigneeLinks(gm, { entity_id: args.entity_id });
-                result = ccResult;
-                for (const edge of ccResult.links) {
-                    if (!sessionsEdges.find(e => e.id === edge.id)) {
-                        newEdges.push(edge);
-                    }
-                }
-            }
-            catch (err) {
-                result = { error: err instanceof Error ? err.message : String(err), links: [] };
-            }
-            break;
-        }
-        case 'match_sanctions': {
-            const entityId = args.entity_id;
-            const entity = gm.getEntity(entityId);
-            if (!entity) {
-                result = { matches: [], error: `Entity not found: ${entityId}` };
-                break;
-            }
-            const entityName = normalizeEntityName(entity.name);
-            const matches = [];
-            for (const sanction of sanctionsList) {
-                const s = sanction;
-                const sanctionName = normalizeEntityName(s.name || '');
-                const score = jaroWinklerSimilarity(entityName, sanctionName);
-                if (score >= 0.65) {
-                    matches.push({
-                        sanction_id: s.id || `sanction-${matches.length}`,
-                        list: s.list || 'unknown',
-                        rationale: `Name similarity ${(score * 100).toFixed(0)}% between '${entity.name}' and '${s.name}'`,
-                        score,
-                    });
-                }
-            }
-            matches.sort((a, b) => b.score - a.score);
-            result = { matches };
-            break;
-        }
-        default:
-            result = { error: `Unknown tool: ${tool}` };
+async function createMcpClient() {
+    const transport = new StdioClientTransport({
+        command: 'npx',
+        args: ['--yes', 'tsx', MCP_SERVER_ENTRY],
+        env: {
+            ...process.env,
+            MCP_TRANSPORT_TYPE: 'stdio',
+        },
+        cwd: WORKSPACE_ROOT,
+        stderr: 'pipe',
+    });
+    const client = new Client({ name: 'bruteforce-orchestrator', version: '0.1.0' }, { capabilities: {} });
+    await client.connect(transport);
+    return { client, transport };
+}
+function parseToolResponse(response) {
+    const r = response;
+    const content = r.content;
+    if (!content)
+        return {};
+    const textContent = content.find(c => c.type === 'text');
+    if (!textContent?.text)
+        return {};
+    try {
+        return JSON.parse(textContent.text);
     }
+    catch {
+        return {};
+    }
+}
+function extractNewEdges(tool, result, existingEdges) {
+    const newEdges = [];
+    const r = result;
+    if (tool === 'all_control_paths' && Array.isArray(r.paths)) {
+        for (const path of r.paths) {
+            const p = path;
+            if (Array.isArray(p.path)) {
+                for (const edge of p.path) {
+                    const e = edge;
+                    if (!existingEdges.find(ex => ex.id === e.id)) {
+                        newEdges.push(e);
+                    }
+                }
+            }
+        }
+    }
+    if (tool === 'find_shared_attributes' && Array.isArray(r.links)) {
+        for (const link of r.links) {
+            const l = link;
+            if (Array.isArray(l.edges)) {
+                for (const edge of l.edges) {
+                    const e = edge;
+                    if (!existingEdges.find(ex => ex.id === e.id)) {
+                        newEdges.push(e);
+                    }
+                }
+            }
+        }
+    }
+    if (tool === 'co_consignee_links' && Array.isArray(r.links)) {
+        for (const edge of r.links) {
+            const e = edge;
+            if (!existingEdges.find(ex => ex.id === e.id)) {
+                newEdges.push(e);
+            }
+        }
+    }
+    return newEdges;
+}
+async function runTool(client, tool, args, existingEdges) {
+    const response = await client.callTool({
+        name: tool,
+        arguments: args,
+    });
+    const result = parseToolResponse(response);
+    if (response.isError) {
+        return { result, newEdges: [] };
+    }
+    const newEdges = extractNewEdges(tool, result, existingEdges);
     return { result, newEdges };
 }
-function buildPlannerPrompt(target, targetEntityId, steps, edges) {
+function buildPlannerPrompt(target, targetEntityId, uboEntityId, steps, edges) {
     const gm = buildGraph(edges);
     const allEntities = gm.getAllEntities();
     const stats = gm.toEvidenceGraph();
@@ -175,20 +145,23 @@ AVAILABLE TOOLS:
 3. compute_control(root, target) — Calculate effective ownership percentage
 4. find_shared_attributes(entity_id, attribute?) — Find entities sharing directors, addresses, or agents
 5. co_consignee_links(entity_id) — Find trade co-consignee relationships
-6. match_sanctions(entity_id) — Match an entity against sanctions lists
+6. score_evidence(edge_ids) — Score evidence edges for confidence
+7. match_sanctions(entity_id) — Match an entity against sanctions lists
 
 INVESTIGATION STRATEGY:
 1. Start by resolving the target company name to an entity ID using resolve_entity
 2. Explore direct ownership paths (owns_pct edges)
 3. If direct paths are thin, pivot to shared directors, addresses, or agents
-4. When you find a potential UBO, compute control percentage
+4. When you find a potential UBO, compute control percentage using compute_control(root=<company_id>, target=<ubo_candidate_id>)
 5. Check if control >= 25% threshold and match against sanctions
+6. Use score_evidence to assess evidence quality on key edges
 
 CURRENT STATE:
 - Steps taken: ${steps}
 - Entities discovered: ${stats.nodes.length}
 - Edges discovered: ${stats.edges.length}
 ${targetEntityId ? `- Target entity ID resolved as: ${targetEntityId}` : '- Target entity ID not yet resolved'}
+${uboEntityId ? `- Suspected UBO entity ID: ${uboEntityId}` : '- No UBO suspected yet'}
 ${allEntities.map(e => `  - ${e.id}: ${e.name} (${e.type}, ${e.jurisdiction})`).join('\n')}
 
 You MUST respond with valid JSON ONLY in this exact format:
@@ -196,27 +169,72 @@ You MUST respond with valid JSON ONLY in this exact format:
 OR if investigation is complete:
 {"rationale": "reason for stopping", "stop": true, "reason": "Veil pierced or exhausted all avenues"}`;
 }
-export async function runInvestigation(target, sanctionsList, sseClients) {
+async function runExplainer(mcpClient, target, dossier, sseClients) {
+    const apiKey = ANTHROPIC_API_KEY;
+    if (!apiKey)
+        return '';
+    const anthropic = new Anthropic({ apiKey });
+    let systemPrompt = 'You are an investigation Explainer. Generate clear, sourced narrative only. Never invent facts.';
+    if (mcpClient) {
+        try {
+            const promptResponse = await mcpClient.getPrompt({
+                name: 'explanation_playbook',
+                arguments: { target_company: target },
+            });
+            const promptContent = promptResponse.messages[0]?.content;
+            if (promptContent && promptContent.type === 'text') {
+                systemPrompt = promptContent.text;
+            }
+        }
+        catch (e) {
+            console.warn('Failed to fetch explanation_playbook prompt', e);
+        }
+    }
+    const prompt = `${systemPrompt}\n\nHere is the complete dossier with all tool outputs:\n\n${JSON.stringify(dossier, null, 2)}\n\nGenerate a clear, professional investigation summary with sourced claims only.`;
+    const msg = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2048,
+        temperature: 0,
+        system: 'You are an investigation Explainer. Generate clear, sourced narrative only. Never invent facts.',
+        messages: [{ role: 'user', content: prompt }],
+    });
+    const content = msg.content[0];
+    const narrative = content.type === 'text' ? content.text : '';
+    streamToAll(sseClients, 'explainer_narrative', { narrative });
+    return narrative;
+}
+export async function runInvestigation(target, sseClients) {
     const session = createSession(target);
     const apiKey = ANTHROPIC_API_KEY;
     if (!apiKey) {
         session.status = 'error';
         session.error = 'ANTHROPIC_API_KEY not configured';
-        for (const client of sseClients) {
-            client.send('error', { message: 'ANTHROPIC_API_KEY not configured' });
-        }
+        streamToAll(sseClients, 'error', { message: 'ANTHROPIC_API_KEY not configured' });
         return session;
     }
     const anthropic = new Anthropic({ apiKey });
+    let mcpClient = null;
+    let mcpTransport = null;
+    let lastControlValue = 0;
     try {
+        const mcp = await createMcpClient();
+        mcpClient = mcp.client;
+        mcpTransport = mcp.transport;
+        streamToAll(sseClients, 'mcp_connected', { message: 'Connected to MCP server' });
         while (session.steps < session.maxSteps && session.status === 'running') {
-            const prompt = buildPlannerPrompt(target, session.targetEntityId, session.steps, session.graphEdges);
+            const promptResponse = await mcpClient.getPrompt({
+                name: 'investigation_playbook',
+                arguments: { target_company: target },
+            });
+            const promptContent = promptResponse.messages[0]?.content;
+            const systemPrompt = promptContent && promptContent.type === 'text' ? promptContent.text : 'You are an investigation planner.';
+            const stats = `\n\nCURRENT STATE:\n- Steps taken: ${session.steps}\n- Target entity ID: ${session.targetEntityId || 'unknown'}\n- Suspected UBO ID: ${session.uboEntityId || 'none'}\n\nYou MUST respond with valid JSON ONLY in this exact format:\n{"rationale": "your reasoning for the next action", "tool": "tool_name", "args": {"arg1": "value1"}}\nOR if investigation is complete:\n{"rationale": "reason for stopping", "stop": true, "reason": "Veil pierced or exhausted all avenues"}`;
             const msg = await anthropic.messages.create({
                 model: 'claude-sonnet-4-20250514',
                 max_tokens: 1024,
                 temperature: 0,
-                system: 'You are an investigation planner. Respond with valid JSON only. Never make up facts or numbers.',
-                messages: [{ role: 'user', content: prompt }],
+                system: systemPrompt,
+                messages: [{ role: 'user', content: systemPrompt + stats }],
             });
             const content = msg.content[0];
             if (content.type !== 'text') {
@@ -235,77 +253,49 @@ export async function runInvestigation(target, sanctionsList, sseClients) {
             }
             const rationale = parsed.rationale || '';
             if (parsed.stop) {
-                session.status = 'pierced';
-                for (const client of sseClients) {
-                    client.send('planner_decision', { step: session.steps, action: 'stop', rationale });
+                if (typeof parsed.reason === 'string' && parsed.reason === 'Veil pierced') {
+                    session.status = 'pierced';
                 }
+                else {
+                    session.status = 'exhausted';
+                }
+                streamToAll(sseClients, 'planner_decision', { step: session.steps, action: 'stop', rationale });
                 break;
             }
             const tool = parsed.tool;
             const args = parsed.args || {};
-            for (const client of sseClients) {
-                client.send('planner_decision', { step: session.steps, tool, args, rationale });
-            }
-            const { result, newEdges } = await runTool(tool, args, session.graphEdges, sanctionsList);
+            streamToAll(sseClients, 'planner_decision', { step: session.steps, tool, args, rationale });
+            const { result, newEdges } = await runTool(mcpClient, tool, args, session.graphEdges);
             session.graphEdges.push(...newEdges);
-            for (const client of sseClients) {
-                client.send('tool_result', { step: session.steps, tool, args, result, new_edges_count: newEdges.length });
-            }
+            streamToAll(sseClients, 'tool_result', { step: session.steps, tool, args, result, new_edges_count: newEdges.length });
             for (const edge of newEdges) {
-                for (const client of sseClients) {
-                    client.send('edge_found', { edge, step: session.steps });
-                }
+                streamToAll(sseClients, 'edge_found', { edge, step: session.steps });
             }
             if (tool === 'resolve_entity') {
                 const r = result;
                 if (r.matches && r.matches.length > 0 && !session.targetEntityId) {
                     session.targetEntityId = r.matches[0].entity_id;
-                    for (const client of sseClients) {
-                        client.send('target_resolved', { entity_id: session.targetEntityId, step: session.steps });
-                    }
+                    streamToAll(sseClients, 'target_resolved', { entity_id: session.targetEntityId, step: session.steps });
                 }
             }
             if (tool === 'compute_control') {
                 const r = result;
-                for (const client of sseClients) {
-                    client.send('control_update', { effective_control: r.effective_control ?? 0, meets_threshold: r.meets_threshold ?? false, step: session.steps });
-                }
+                lastControlValue = r.effective_control ?? 0;
+                session.uboEntityId = args.target || session.uboEntityId;
+                streamToAll(sseClients, 'control_update', { effective_control: lastControlValue, meets_threshold: r.meets_threshold ?? false, step: session.steps });
             }
             if (tool === 'match_sanctions') {
                 const r = result;
-                for (const client of sseClients) {
-                    client.send('sanction_hit', { matches: r.matches ?? [], step: session.steps });
-                }
+                streamToAll(sseClients, 'sanction_hit', { matches: r.matches ?? [], step: session.steps });
             }
-            const controlResult = session.graphEdges.length > 0 ? (() => {
-                try {
-                    const gm = buildGraph(session.graphEdges);
-                    if (session.targetEntityId) {
-                        const entities = gm.getAllEntities();
-                        for (const entity of entities) {
-                            if (entity.id !== session.targetEntityId) {
-                                const paths = allControlPaths(gm, { from: entity.id, to: session.targetEntityId, maxDepth: 6 });
-                                if (paths.length > 0) {
-                                    const cc = computeControl(paths);
-                                    return { effective_control: cc.effectiveControl, target: entity.id };
-                                }
-                            }
-                        }
-                    }
-                }
-                catch { }
-                return null;
-            })() : null;
             const sanctionsHit = session.graphEdges.some(e => e.type === 'listed_sanctioned');
             const verdict = adjudicate({
-                effectiveControl: controlResult?.effective_control ?? 0,
+                effectiveControl: lastControlValue,
                 sanctionsHit,
                 edges: session.graphEdges,
             });
             session.verdict = verdict;
-            for (const client of sseClients) {
-                client.send('verdict_update', { verdict, step: session.steps });
-            }
+            streamToAll(sseClients, 'verdict_update', { verdict, step: session.steps });
             if (verdict.pierced) {
                 session.status = 'pierced';
                 break;
@@ -315,16 +305,55 @@ export async function runInvestigation(target, sanctionsList, sseClients) {
         if (session.status === 'running') {
             session.status = 'exhausted';
         }
-        for (const client of sseClients) {
-            client.send('investigation_complete', { status: session.status, steps: session.steps });
+        // Assemble dossier via MCP
+        if (session.targetEntityId && mcpClient) {
+            try {
+                const dossierResponse = await mcpClient.callTool({
+                    name: 'assemble_dossier',
+                    arguments: {
+                        root: session.targetEntityId,
+                        target: session.uboEntityId || session.targetEntityId,
+                    },
+                });
+                const dossier = parseToolResponse(dossierResponse);
+                session.dossier = dossier;
+                streamToAll(sseClients, 'dossier_assembled', { dossier });
+            }
+            catch (err) {
+                const message = err instanceof Error ? err.message : String(err);
+                streamToAll(sseClients, 'error', { message: `Failed to assemble dossier: ${message}` });
+            }
         }
+        // Explainer step (runs after dossier assembly, even if not pierced)
+        if (session.dossier && session.status !== 'error') {
+            try {
+                const narrative = await runExplainer(mcpClient, target, session.dossier, sseClients);
+                session.narrative = narrative;
+            }
+            catch (err) {
+                const message = err instanceof Error ? err.message : String(err);
+                streamToAll(sseClients, 'error', { message: `Explainer failed: ${message}` });
+            }
+        }
+        streamToAll(sseClients, 'investigation_complete', { status: session.status, steps: session.steps });
     }
     catch (err) {
         session.status = 'error';
         session.error = err instanceof Error ? err.message : String(err);
-        for (const client of sseClients) {
-            client.send('error', { message: session.error });
+        streamToAll(sseClients, 'error', { message: session.error });
+    }
+    finally {
+        if (mcpTransport) {
+            try {
+                await mcpTransport.close();
+            }
+            catch { }
         }
     }
     return session;
+}
+function streamToAll(clients, event, data) {
+    for (const client of clients) {
+        client.send(event, data);
+    }
 }

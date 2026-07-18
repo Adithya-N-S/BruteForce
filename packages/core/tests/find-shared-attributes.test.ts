@@ -371,7 +371,7 @@ describe('findSharedAttributes - List Mode', () => {
       // hq_address → 'address', fax_number → 'phone', vat_code → 'tax_id'
       expect(result.matches.length).toBeGreaterThanOrEqual(1);
       const match = result.matches[0];
-      expect(match.matchedFields.sort()).toEqual(
+      expect([...match.matchedFields].sort()).toEqual(
         expect.arrayContaining(['address', 'phone', 'tax_id'])
       );
     });

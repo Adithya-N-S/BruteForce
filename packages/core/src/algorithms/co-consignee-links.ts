@@ -28,6 +28,7 @@
  */
 
 import type { EntityId, EntityNode, EvidenceEdge, EvidenceGraph } from '../types.js';
+import { GraphManager } from '../graph/graph-manager.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public Types
@@ -491,12 +492,23 @@ function buildCoConsigneeLink(
 export function coConsigneeLinks(
   graph: EvidenceGraph,
   params: { entity_id: EntityId }
+): CoConsigneeLinksResult;
+export function coConsigneeLinks(
+  graph: GraphManager,
+  params: { entity_id: EntityId }
+): CoConsigneeLinksResult;
+export function coConsigneeLinks(
+  graph: EvidenceGraph | GraphManager,
+  params: { entity_id: EntityId }
 ): CoConsigneeLinksResult {
   const { entity_id: focalEntityId } = params;
 
+  const edges = graph instanceof GraphManager ? graph.toEvidenceGraph().edges : graph.edges;
+  const nodes = graph instanceof GraphManager ? graph.toEvidenceGraph().nodes : graph.nodes;
+
   // ── Step 1: Build indexes ─────────────────────────────────────────────────
-  const adjacencyIndex = buildAdjacencyIndex(graph.edges);
-  const nodeIndex = buildNodeIndex(graph.nodes);
+  const adjacencyIndex = buildAdjacencyIndex(edges);
+  const nodeIndex = buildNodeIndex(nodes);
 
   // ── Step 2: Find shipments the focal entity participates in ───────────────
   const shipmentIds = findFocalShipmentIds(focalEntityId, adjacencyIndex);

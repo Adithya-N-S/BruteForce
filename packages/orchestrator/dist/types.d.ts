@@ -3,12 +3,14 @@ export interface InvestigationSession {
     id: string;
     target: string;
     targetEntityId: string | null;
+    uboEntityId: string | null;
     graphEdges: EvidenceEdge[];
     steps: number;
     maxSteps: number;
     status: 'running' | 'pierced' | 'exhausted' | 'error';
     verdict: AdjudicatorVerdict | null;
     dossier: Dossier | null;
+    narrative: string | null;
     createdAt: string;
     error?: string;
 }

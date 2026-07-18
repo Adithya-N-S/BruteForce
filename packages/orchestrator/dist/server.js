@@ -1,26 +1,11 @@
 import 'dotenv/config';
 import express from 'express';
-import { readFileSync } from 'fs';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { runInvestigation } from './planner.js';
 const app = express();
 const PORT = parseInt(process.env.ORCHESTRATOR_PORT || '3001', 10);
 app.use(express.json());
 const sessions = new Map();
 const sseClients = new Map();
-function loadSanctionsList() {
-    try {
-        const currentDir = dirname(fileURLToPath(import.meta.url));
-        const path = resolve(currentDir, '..', '..', 'data', 'seed', 'sanctions_list.json');
-        const data = JSON.parse(readFileSync(path, 'utf-8'));
-        return Array.isArray(data) ? data : [];
-    }
-    catch {
-        return [];
-    }
-}
-const sanctionsList = loadSanctionsList();
 app.post('/investigate', async (req, res) => {
     const { target } = req.body;
     if (!target || typeof target !== 'string') {
@@ -31,7 +16,7 @@ app.post('/investigate', async (req, res) => {
     const clients = [];
     sseClients.set(sessionId, clients);
     res.json({ investigation_id: sessionId });
-    runInvestigation(target, sanctionsList, clients).then(session => {
+    runInvestigation(target, clients).then(session => {
         sessions.set(sessionId, session);
     }).catch(err => {
         console.error('Investigation failed:', err);
@@ -82,7 +67,7 @@ app.get('/dossier/:id', (req, res) => {
         res.status(202).json({ status: session.status, message: 'Investigation still in progress or no dossier yet' });
         return;
     }
-    res.json(session.dossier);
+    res.json({ dossier: session.dossier, narrative: session.narrative });
 });
 app.get('/audit/:id', (req, res) => {
     const id = req.params.id;
