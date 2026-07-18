@@ -1,4 +1,4 @@
-// File: C:\Users\adith\BruteForce\packages\mcp-server\src\widgets\app\layout.tsx
+// File: /home/anand-r-m/Documents/Hackathon/BruteForce/packages/mcp-server/src/widgets/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
