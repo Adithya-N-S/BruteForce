@@ -3,7 +3,12 @@ import { GraphService } from '../../services/graph.service.js';
 
 @Controller()
 export class InvestigationResources {
-  constructor(private readonly graphService: GraphService) {}
+  constructor(private readonly graphService: GraphService) {
+    this.getEvidenceGraph = this.getEvidenceGraph.bind(this);
+    this.getSourceRecord = this.getSourceRecord.bind(this);
+    this.getAuditLog = this.getAuditLog.bind(this);
+    this.getSanctionsList = this.getSanctionsList.bind(this);
+  }
 
   @Resource({
     uri: 'bruteforce://graph/evidence',

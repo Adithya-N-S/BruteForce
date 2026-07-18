@@ -8,7 +8,11 @@ import {
 
 @Controller()
 export class InvestigationTools {
-  constructor(private readonly graphService: GraphService) {}
+  constructor(private readonly graphService: GraphService) {
+    this.resolveEntityTool = this.resolveEntityTool.bind(this);
+    this.allControlPathsTool = this.allControlPathsTool.bind(this);
+    this.computeControlTool = this.computeControlTool.bind(this);
+  }
 
   @Tool({
     name: 'resolve_entity',

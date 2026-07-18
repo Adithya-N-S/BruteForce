@@ -7,7 +7,10 @@ import {
 
 @Controller()
 export class InvestigationReportTools {
-  constructor(private readonly graphService: GraphService) {}
+  constructor(private readonly graphService: GraphService) {
+    this.matchSanctionsTool = this.matchSanctionsTool.bind(this);
+    this.assembleDossierTool = this.assembleDossierTool.bind(this);
+  }
 
   @Tool({
     name: 'match_sanctions',

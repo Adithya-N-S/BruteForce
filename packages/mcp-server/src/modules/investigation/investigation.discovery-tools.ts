@@ -8,7 +8,11 @@ import {
 
 @Controller()
 export class InvestigationDiscoveryTools {
-  constructor(private readonly graphService: GraphService) {}
+  constructor(private readonly graphService: GraphService) {
+    this.findSharedAttributesTool = this.findSharedAttributesTool.bind(this);
+    this.coConsigneeLinksTool = this.coConsigneeLinksTool.bind(this);
+    this.scoreEvidenceTool = this.scoreEvidenceTool.bind(this);
+  }
 
   @Tool({
     name: 'find_shared_attributes',

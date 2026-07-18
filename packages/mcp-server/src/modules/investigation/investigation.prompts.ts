@@ -3,7 +3,11 @@ import { GraphService } from '../../services/graph.service.js';
 
 @Controller()
 export class InvestigationPrompts {
-  constructor(private readonly graphService: GraphService) {}
+  constructor(private readonly graphService: GraphService) {
+    this.getInvestigationPlaybook = this.getInvestigationPlaybook.bind(this);
+    this.getExplanationPlaybook = this.getExplanationPlaybook.bind(this);
+    this.getSarSummaryTemplate = this.getSarSummaryTemplate.bind(this);
+  }
   @Prompt({
     name: 'investigation_playbook',
     description: 'System prompt for the AI Planner that drives investigation. Enforces the deterministic wall: the AI plans and chooses tools, but never asserts facts about ownership or entities.',
