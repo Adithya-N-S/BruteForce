@@ -1,5 +1,9 @@
 {
   "name": "bruteforce",
   "private": true,
-  "workspaces": ["packages/*"]
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "npm run build --workspace=@bruteforce/core && npm run build --workspace=veilbreaker-mcp",
+    "start": "npm run start --workspace=veilbreaker-mcp"
+  }
 }

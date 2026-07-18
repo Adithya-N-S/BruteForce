@@ -154,7 +154,7 @@ export class InvestigationTools {
   ) {
     const graph = this.graphService.getGraph();
     try {
-      const result = coConsigneeLinks(graph, { entity_id: input.entity_id });
+      const result = coConsigneeLinks(graph.toEvidenceGraph(), { entity_id: input.entity_id });
       this.graphService.appendAudit({ tool: 'co_consignee_links', input, output: result });
       return result;
     } catch (err: unknown) {

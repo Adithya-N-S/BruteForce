@@ -77,6 +77,12 @@ export {
   type SharedAttributeMatch,
   type SharedAttributesResult,
   coConsigneeLinks,
+  type TradeEdgeType,
+  type CoConsigneePeer,
+  type CoConsigneeLink,
+  type CoConsigneeLinksResult,
+  matchSanctions,
+  type MatchSanctionsOptions,
   assembleDossier,
   type InvestigationSummary,
   type EffectiveOwnershipSummary,
@@ -84,7 +90,6 @@ export {
   type ConfidenceSummary,
   type RecommendationsSection,
   type ComprehensiveDossier,
-  matchSanctions,
 } from './algorithms/index.js';
 
 // Utilities

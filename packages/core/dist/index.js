@@ -24,7 +24,7 @@
 // Graph layer
 export { GraphManager, GraphError, DuplicateEntityError, EntityNotFoundError, DuplicateEdgeError, EdgeNotFoundError, } from './graph/index.js';
 // Algorithms
-export { resolveEntity, allControlPaths, computeControl, scoreEvidence, DEFAULT_WEIGHTS, findSharedAttributes, coConsigneeLinks, assembleDossier, matchSanctions, } from './algorithms/index.js';
+export { resolveEntity, allControlPaths, computeControl, scoreEvidence, DEFAULT_WEIGHTS, findSharedAttributes, coConsigneeLinks, matchSanctions, assembleDossier, } from './algorithms/index.js';
 // Utilities
 export { stripDiacritics, normalizeString, normalizeEntityName, jaroSimilarity, jaroWinklerSimilarity, isNormalizedExactMatch, hasIdentifierOverlap, } from './utils/index.js';
 //# sourceMappingURL=index.js.map
